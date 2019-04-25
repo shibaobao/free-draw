@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="400"></canvas>
+  <script src="../build/easy-draw.bundle.js"></script>
+  <script>
+    const easyDraw = new EasyDraw({ canvas: document.getElementById('canvas') });
+    const polygon = easyDraw.addShape({ id: 1, type: 'polygon'});
+    
+    setTimeout(() => {
+      console.log(polygon.finish());
+    }, 5000);
+
+  </script>
+</body>
+</html>
