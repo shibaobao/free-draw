@@ -1,6 +1,30 @@
+const Tool = require('./tool');
+
 class Basic {
   constructor (options) {
+    this.EasyDraw = options.EasyDraw;
+
+    this.id = options.id;
     this.ctx = options.ctx;
+    // If current polycon is active
+    this.active = true;
+
+    // Shape style
+    this.style = options.style;
+
+    // Shape Object
+    this.shapeObject = null;
+
+    // Shape points 
+    this.points = options.points || [];
+    // Shape handle points
+    this.handlePoints = [];
+
+    this.defaultStyle = {
+      lineWidth: 2,
+      fillStyle: 'rgba(255, 255, 255, 0.5)',
+      strokeStyle: '#409EFF'
+    };
   }
 
   updateStyle (style = {}) {
@@ -45,6 +69,17 @@ class Basic {
           this.handleMouseUp(event);
         }
         break;
+    }
+  }
+
+  finish () {
+    this.active = false;
+    this.handlePoints = [];
+    this.EasyDraw.refreshShapes();
+    return {
+      id: this.id,
+      points: this.points,
+      path: Tool.pointsToSVGPath(this.points)
     }
   }
 

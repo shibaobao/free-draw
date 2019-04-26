@@ -4,26 +4,10 @@ const Basic = require('./basic');
 class Polygon extends Basic {
   constructor (options) {
     super(options);
-    this.EasyDraw = options.EasyDraw;
-    this.id = options.id;
-    this.ctx = options.ctx;
-    // If current polycon is active
-    this.active = true;
+    
     this.handlePointIndex = null;
-    // Shape points 
-    this.points = options.points || [];
-    // Shape handle points
-    this.handlePoints = [];
-    // Shape Object
-    this.shapeObject = null;
   
-    this.style = options.style;
     this.handlePointStyle = options.handlePointStyle;
-    this.defaultStyle = {
-      lineWidth: 2,
-      fillStyle: 'rgba(255, 255, 255, 0.5)',
-      strokeStyle: '#409EFF'
-    };
     this.defaultHandlePointStyle = {
       lineWidth: 2,
       fillStyle: 'rgba(255, 255, 255, 0.5)',
@@ -105,17 +89,6 @@ class Polygon extends Basic {
   handleMouseUp () {
     if (this.handlePointIndex !== null) {
       this.handlePointIndex = null;
-    }
-  }
-
-  finish () {
-    this.active = false;
-    this.handlePoints = [];
-    this.EasyDraw.refreshShapes();
-    return {
-      id: this.id,
-      points: this.points,
-      path: Tool.pointsToSVGPath(this.points)
     }
   }
 

@@ -8,13 +8,14 @@
 </head>
 <body>
   <canvas id="canvas" width="600" height="400"></canvas>
+  <button onclick=""></button>
   <script src="../build/easy-draw.bundle.js"></script>
   <script>
     const easyDraw = new EasyDraw({ canvas: document.getElementById('canvas') });
     const polygon = easyDraw.addShape({ id: 1, type: 'polygon'});
     
     setTimeout(() => {
-      console.log(polygon.finish());
+      console.log(easyDraw.finish());
     }, 5000);
 
   </script>

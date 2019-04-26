@@ -1,4 +1,5 @@
 const Polygon = require('./polygon');
+const Rect = require('./rect');
 
 class EasyDraw {
   constructor (options) {
@@ -9,6 +10,7 @@ class EasyDraw {
     this._initCanvasEvent();
     // Current model view/edit
     this.model = 'view';
+    this.editingShapeId = null;
   }
 
   _initCanvasEvent () {
@@ -41,12 +43,25 @@ class EasyDraw {
   }
 
   /**
+   * Finish current drawing
+   */
+  finish () {
+    this.model = 'view';
+    const shape = this.shapeInCanvas[this.editingShapeId].finish();
+    this.editingShapeId = null;
+    return shape;
+  }
+
+  /**
    * Remove shape by unique id
    * @param {*} uniqueId
    */
   removeShape (id) {
-    if (this.shapeObjects[id]) {
-      delete this.shapeObjects[id]
+    if (this.shapeInCanvas[id]) {
+      delete this.shapeInCanvas[id];
+      this.refreshShapes();
+    } else {
+      console.warn('Shape not exist')
     }
   }
 
@@ -63,14 +78,15 @@ class EasyDraw {
       throw new Error(`Shape id can not be empty`);
     }
     if (this.shapeInCanvas[id]) {
-      throw new Error(`Shape id must be unique, shape id '${id}' has already exit`);
+      throw new Error(`Shape id must be unique, shape id '${id}' has already exist`);
     }
     this.model = 'edit';
+    this.editingShapeId = id;
     if (type === 'path') {
     } else if (type === 'polygon') {
       return this._addPolygon(params);
     } else if (type === 'rect') {
-
+      return this._addRect(params);
     }
   }
 
@@ -79,6 +95,14 @@ class EasyDraw {
     this.shapeInCanvas[id] = new Polygon({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
+
+  _addRect (params) {
+    const { id, style } = params;
+    this.shapeInCanvas[id] = new Rect({ id, ctx: this.ctx, style, EasyDraw: this });
+    return this.shapeInCanvas[id];
+  }
+  
+  
 }
 
 window.EasyDraw = EasyDraw;
