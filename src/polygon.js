@@ -4,16 +4,6 @@ const Basic = require('./basic');
 class Polygon extends Basic {
   constructor (options) {
     super(options);
-    
-    this.handlePointIndex = null;
-  
-    this.handlePointStyle = options.handlePointStyle;
-    this.defaultHandlePointStyle = {
-      lineWidth: 2,
-      fillStyle: 'rgba(255, 255, 255, 0.5)',
-      strokeStyle: '#F56C6C',
-      radius: 8
-    };
     this.initPolygon();
   }
 
@@ -23,34 +13,9 @@ class Polygon extends Basic {
     }
   }
 
-  update (params) {
-    if (!params) {
-      return
-    }
-    const { style, active } = params;
-    if (style !== undefined) {
-      this.style = Object.assign({}, this.style, style);
-    }
-    if (active !== undefined) {
-      this.active = active;
-    }
-    // TODO Add refresh shape logic
-  }
-
-  refresh () {
-    this.refreshShape()
-    this.refreshHandlePoints()
-  }
-
   refreshShape () {
     const path = Tool.pointsToSVGPath(this.points);
     this.shapeObject = this.drawPath(path, Object.assign({}, this.defaultStyle, this.style));
-  }
-
-  refreshHandlePoints () {
-    for (let handlePoint of this.handlePoints) {
-      handlePoint.obj = this._drawHandlePoint(handlePoint.point[0], handlePoint.point[1], handlePoint.style);
-    }
   }
   
   handleMouseDown (event) {
@@ -75,7 +40,6 @@ class Polygon extends Basic {
 
   handleMouseMove (event) {
     if (!this.active) {
-      
     } else {
       if (this.handlePointIndex !== null) {
         const { offsetX: x, offsetY: y } = event;
@@ -92,34 +56,8 @@ class Polygon extends Basic {
     }
   }
 
-  /**
-   * Draw Handle Point
-   * @param {Number} x 
-   * @param {Number} y 
-   * @param {Object} style 
-   */
-  _drawHandlePoint (x, y, style = this.defaultHandlePointStyle) {
-    const handlePoint = new Path2D();
-    handlePoint.arc(x, y, style.radius, 0, 2 * Math.PI);
-    this.updateStyle(style);
-    this.ctx.fill(handlePoint);
-    this.ctx.stroke(handlePoint);
-    return handlePoint;
-  }
-
   _getHandlePointStyle () {
     return Object.assign({}, this.handlePointStyle, this.defaultHandlePointStyle);
-  }
-
-  _isClickHandlePoint (x, y) {
-    let handlePointIndex = null;
-    for (let i = 0; i < this.handlePoints.length; i++) {
-      if (this.isPointInShape({x, y}, this.handlePoints[i].obj)) {
-        handlePointIndex = i;
-        break;
-      }
-    }
-    return handlePointIndex;
   }
 }
 

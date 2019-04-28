@@ -17,6 +17,10 @@ class EasyDraw {
     this.canvasDOM.addEventListener('mousedown', this._distributeCanvasEvent.bind(this));
     this.canvasDOM.addEventListener('mousemove', this._distributeCanvasEvent.bind(this));
     this.canvasDOM.addEventListener('mouseup', this._distributeCanvasEvent.bind(this));
+
+    if (document) {
+      document.addEventListener('keydown', this._distributeCanvasEvent.bind(this));
+    }
   }
 
   _distributeCanvasEvent (event) {
@@ -45,11 +49,9 @@ class EasyDraw {
   /**
    * Finish current drawing
    */
-  finish () {
+  _finishDrawing () {
     this.model = 'view';
-    const shape = this.shapeInCanvas[this.editingShapeId].finish();
     this.editingShapeId = null;
-    return shape;
   }
 
   /**

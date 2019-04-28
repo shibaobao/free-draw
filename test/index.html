@@ -12,10 +12,10 @@
   <script src="../build/easy-draw.bundle.js"></script>
   <script>
     const easyDraw = new EasyDraw({ canvas: document.getElementById('canvas') });
-    const polygon = easyDraw.addShape({ id: 1, type: 'polygon'});
+    const polygon = easyDraw.addShape({ id: 1, type: 'rect'});
     
     setTimeout(() => {
-      console.log(easyDraw.finish());
+      console.log(polygon.finish())
     }, 5000);
 
   </script>
