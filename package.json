@@ -26,6 +26,9 @@
   },
   "homepage": "https://github.com/shibaobao/Easy-Draw#readme",
   "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-loader": "^8.0.5",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1"
   }

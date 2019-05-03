@@ -1,5 +1,6 @@
 const Polygon = require('./polygon');
 const Rect = require('./rect');
+const Path = require('./path');
 
 class EasyDraw {
   constructor (options) {
@@ -89,6 +90,8 @@ class EasyDraw {
       return this._addPolygon(params);
     } else if (type === 'rect') {
       return this._addRect(params);
+    } else if (type === 'path') {
+      return this._addPath(params);
     }
   }
 
@@ -103,8 +106,12 @@ class EasyDraw {
     this.shapeInCanvas[id] = new Rect({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
-  
-  
+
+  _addPath (params) {
+    const { id, style } = params;
+    this.shapeInCanvas[id] = new Path({ id, ctx: this.ctx, style, EasyDraw: this });
+    return this.shapeInCanvas[id];
+  }
 }
 
 window.EasyDraw = EasyDraw;
