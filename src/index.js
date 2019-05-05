@@ -2,7 +2,7 @@ const Polygon = require('./polygon');
 const Rect = require('./rect');
 const Path = require('./path');
 
-class EasyDraw {
+class FreeDraw {
   constructor (options) {
     this.canvasDOM = options.canvas;
     this.ctx = this.canvasDOM.getContext("2d");
@@ -114,4 +114,4 @@ class EasyDraw {
   }
 }
 
-window.EasyDraw = EasyDraw;
+window.FreeDraw = FreeDraw;

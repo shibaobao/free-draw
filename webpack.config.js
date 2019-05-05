@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'easy-draw.bundle.js'
+    filename: 'free-draw.bundle.js'
   },
   module: {
     rules: [

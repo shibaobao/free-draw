@@ -1,7 +1,7 @@
 {
-  "name": "easy-draw",
+  "name": "free-draw",
   "version": "1.0.0",
-  "description": "Easy draw shapes use canvas",
+  "description": "Free draw shapes use canvas",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shibaobao/Easy-Draw.git"
+    "url": "git+https://github.com/shibaobao/free-draw.git"
   },
   "keywords": [
     "Draw",
@@ -22,9 +22,9 @@
   "author": "Stone Shi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shibaobao/Easy-Draw/issues"
+    "url": "https://github.com/shibaobao/free-draw/issues"
   },
-  "homepage": "https://github.com/shibaobao/Easy-Draw#readme",
+  "homepage": "https://github.com/shibaobao/free-draw#readme",
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",

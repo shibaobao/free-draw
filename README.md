@@ -1,3 +1,3 @@
-# Easy-Draw
+# Free-Draw
 
-Easy draw with canvas
+Free draw with canvas
