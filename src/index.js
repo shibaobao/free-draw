@@ -1,7 +1,5 @@
 const Polygon = require('./polygon');
 const Rect = require('./rect');
-const Path = require('./path');
-const Shape = require('./shape');
 
 class FreeDraw {
   constructor (options) {
@@ -79,21 +77,6 @@ class FreeDraw {
       this.shapeInCanvas[shape].refresh();
     }
   }
-  
-  addShape (params) {
-    const { id, path, style } = params;
-    if (!id) {
-      throw new Error(`Shape id can not be empty`);
-    }
-    if (!path) {
-      throw new Error(`Path can not be empty`);
-    }
-    if (this.viewShapeInCanvas[id]) {
-      throw new Error(`Shape id must be unique, shape id '${id}' has already exist`);
-    }
-    this.viewShapeInCanvas[id] = new Shape({ id, ctx: this.ctx, style, EasyDraw: this, path });
-    return this.viewShapeInCanvas[id];
-  }
 
   drawShape (params) {
     const { id, type } = params;
@@ -110,8 +93,6 @@ class FreeDraw {
       return this._drawPolygon(params);
     } else if (type === 'rect') {
       return this._drawRect(params);
-    } else if (type === 'path') {
-      return this._drawPath(params);
     }
   }
 
@@ -124,12 +105,6 @@ class FreeDraw {
   _drawRect (params) {
     const { id, style } = params;
     this.shapeInCanvas[id] = new Rect({ id, ctx: this.ctx, style, EasyDraw: this });
-    return this.shapeInCanvas[id];
-  }
-
-  _drawPath (params) {
-    const { id, style } = params;
-    this.shapeInCanvas[id] = new Path({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
 }
