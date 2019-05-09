@@ -1,17 +1,22 @@
 const Polygon = require('./polygon');
 const Rect = require('./rect');
 const Path = require('./path');
+const Shape = require('./shape');
 
 class FreeDraw {
   constructor (options) {
+
     this.canvasDOM = options.canvas;
     this.ctx = this.canvasDOM.getContext("2d");
 
-    this.shapeInCanvas = {};
-    this._initCanvasEvent();
-    // Current model view/edit
+    // Current model view/draw
     this.model = 'view';
     this.editingShapeId = null;
+    
+    this.shapeInCanvas = {};
+    this.viewShapeInCanvas = {};
+
+    this._initCanvasEvent();
   }
 
   _initCanvasEvent () {
@@ -27,7 +32,7 @@ class FreeDraw {
   _distributeCanvasEvent (event) {
     const { type } = event;
     // trigger all events when in edit model
-    if (this.model === 'edit') {
+    if (this.model === 'draw') {
       for (let shape in this.shapeInCanvas) {
         // should only one shape in active status
         if (this.shapeInCanvas[shape].active) {
@@ -74,8 +79,23 @@ class FreeDraw {
       this.shapeInCanvas[shape].refresh();
     }
   }
-
+  
   addShape (params) {
+    const { id, path, style } = params;
+    if (!id) {
+      throw new Error(`Shape id can not be empty`);
+    }
+    if (!path) {
+      throw new Error(`Path can not be empty`);
+    }
+    if (this.viewShapeInCanvas[id]) {
+      throw new Error(`Shape id must be unique, shape id '${id}' has already exist`);
+    }
+    this.viewShapeInCanvas[id] = new Shape({ id, ctx: this.ctx, style, EasyDraw: this, path });
+    return this.viewShapeInCanvas[id];
+  }
+
+  drawShape (params) {
     const { id, type } = params;
     if (!id) {
       throw new Error(`Shape id can not be empty`);
@@ -83,35 +103,37 @@ class FreeDraw {
     if (this.shapeInCanvas[id]) {
       throw new Error(`Shape id must be unique, shape id '${id}' has already exist`);
     }
-    this.model = 'edit';
+    this.model = 'draw';
     this.editingShapeId = id;
     if (type === 'path') {
     } else if (type === 'polygon') {
-      return this._addPolygon(params);
+      return this._drawPolygon(params);
     } else if (type === 'rect') {
-      return this._addRect(params);
+      return this._drawRect(params);
     } else if (type === 'path') {
-      return this._addPath(params);
+      return this._drawPath(params);
     }
   }
 
-  _addPolygon (params) {
+  _drawPolygon (params) {
     const { id, style } = params;
     this.shapeInCanvas[id] = new Polygon({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
 
-  _addRect (params) {
+  _drawRect (params) {
     const { id, style } = params;
     this.shapeInCanvas[id] = new Rect({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
 
-  _addPath (params) {
+  _drawPath (params) {
     const { id, style } = params;
     this.shapeInCanvas[id] = new Path({ id, ctx: this.ctx, style, EasyDraw: this });
     return this.shapeInCanvas[id];
   }
 }
+
+module.exports = FreeDraw;
 
 window.FreeDraw = FreeDraw;

@@ -37,21 +37,15 @@ class Basic {
     };
   }
 
-  update (params) {
-    if (!params) {
-      return
+  update ({ style }) {
+    // Update shape style
+    if (style) {
+      this.style = style;
     }
-    const { style, active } = params;
-    if (style !== undefined) {
-      this.style = Object.assign({}, this.style, style);
-    }
-    if (active !== undefined) {
-      this.active = active;
-    }
-    // TODO Add refresh shape logic
+    this.EasyDraw.refreshShapes();
   }
 
-  updateStyle (style = {}) {
+  _updateCtxStyle (style = {}) {
     this.ctx.lineWidth = style.lineWidth;
     this.ctx.fillStyle = style.fillStyle;
     this.ctx.strokeStyle = style.strokeStyle;
@@ -64,7 +58,7 @@ class Basic {
 
   drawPath (path, style = {}) {
     const newPath = new Path2D(path);
-    this.updateStyle(style);
+    this._updateCtxStyle(style);
     this.ctx.fill(newPath);
     this.ctx.stroke(newPath);
     return newPath;
@@ -79,7 +73,7 @@ class Basic {
   _drawHandlePoint (x, y, style = this.defaultHandlePointStyle) {
     const handlePoint = new Path2D();
     handlePoint.arc(x, y, style.radius, 0, 2 * Math.PI);
-    this.updateStyle(style);
+    this._updateCtxStyle(style);
     this.ctx.fill(handlePoint);
     this.ctx.stroke(handlePoint);
     return handlePoint;

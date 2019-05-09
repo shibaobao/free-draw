@@ -9,11 +9,20 @@
 <body>
   <canvas id="canvas" width="1200" height="1000"></canvas>
   <button onclick=""></button>
-  <script src="../build/easy-draw.bundle.js"></script>
+  <script src="../build/free-draw.bundle.js"></script>
   <script>
     const freeDraw = new FreeDraw({ canvas: document.getElementById('canvas') });
-    const path = freeDraw.addShape({ id: 1, type: 'path'});
+    const polygon = freeDraw.drawShape({ id: 1, type: 'polygon'});
 
+    setTimeout( ()=>{
+      polygon.update({
+        style: {
+          lineWidth: 10,
+          fillStyle: 'rgba(255, 255, 255, 0.5)',
+          strokeStyle: '#409EFF'
+        }
+      })
+    }, 5000)
   </script>
 </body>
 </html>

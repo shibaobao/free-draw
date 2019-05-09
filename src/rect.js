@@ -1,4 +1,3 @@
-const Tool = require('./tool');
 const Basic = require('./basic');
 
 class Rect extends Basic {
