@@ -110,5 +110,3 @@ class FreeDraw {
 }
 
 module.exports = FreeDraw;
-
-window.FreeDraw = FreeDraw;

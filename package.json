@@ -1,6 +1,6 @@
 {
   "name": "free-draw",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Free draw shapes use canvas",
   "main": "./build/free-draw.bundle.js",
   "directories": {
