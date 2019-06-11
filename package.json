@@ -9,7 +9,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production --config  ./config/webpack/webpack.config.js",
     "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --open 'Google Chrome' --config ./config/webpack/webpack.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "babel-loader": "^8.0.6",
     "coveralls": "^3.0.4",
     "cross-env": "^5.2.0",
+    "mocha": "^6.1.4",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
     "webpack-dev-server": "^3.7.1"
