@@ -12,17 +12,17 @@
   <script src="../build/free-draw.bundle.js"></script>
   <script>
     const freeDraw = new FreeDraw({ canvas: document.getElementById('canvas') });
-    const polygon = freeDraw.drawShape({ id: 1, type: 'polygon'});
+    const rect = freeDraw.drawShape({ id: 1, type: 'rect'});
 
-    setTimeout( ()=>{
-      polygon.update({
-        style: {
-          lineWidth: 10,
-          fillStyle: 'rgba(255, 255, 255, 0.5)',
-          strokeStyle: '#409EFF'
-        }
-      })
-    }, 5000)
+    // setTimeout( ()=>{
+    //   polygon.update({
+    //     style: {
+    //       lineWidth: 10,
+    //       fillStyle: 'rgba(255, 255, 255, 0.5)',
+    //       strokeStyle: '#409EFF'
+    //     }
+    //   })
+    // }, 5000)
   </script>
 </body>
 </html>
