@@ -1,9 +1,7 @@
-const assert = require('assert');
+function sum(a, b) {
+  return a + b;
+}
 
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1, 2, 3].indexOf(4), -1);
-    });
-  });
+test('adds 1 + 2 to equal 3', () => {
+  expect(sum(1, 2)).toBe(3);
 });
