@@ -1,8 +1,8 @@
-import {
+const {
   HANDLE_POINT_STYLE,
   EDIT_SHAPE_STYLE,
   SHAPE_STYLE
-} from './config'
+} = require('./config')
 
 class Shape {
   constructor (options) {
@@ -121,7 +121,6 @@ class Shape {
     if (!this.shape) {
       return false
     }
-
     return this.freeDraw.ctx.isPointInPath(this.shape, x, y)
   }
 
@@ -160,4 +159,4 @@ class Shape {
   }
 }
 
-export default Shape
+module.exports = Shape

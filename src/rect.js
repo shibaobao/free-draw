@@ -1,4 +1,4 @@
-import Shape from './shape'
+const Shape = require('./shape')
 
 class Rect extends Shape {
   constructor (options) {
@@ -172,4 +172,4 @@ class Rect extends Shape {
   }
 }
 
-export default Rect
+module.exports = Rect

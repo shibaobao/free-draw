@@ -1,5 +1,4 @@
-import Rect from './rect'
-
+const Rect = require('./rect')
 class FreeDraw {
   constructor (options) {
     this.canvasDOM = options.canvas
@@ -197,4 +196,4 @@ class FreeDraw {
   }
 }
 
-export default FreeDraw
+module.exports = FreeDraw
