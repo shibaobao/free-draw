@@ -1,9 +1,9 @@
-const Shape = require('./shape')
+import Shape from './shape'
 
 class Rect extends Shape {
   constructor (options) {
     super(options)
-    this.handlePointsLength = 8
+    this.handlePointsLength = 4
 
     this.startPoint = options.startPoint || []
     this.width = options.width
@@ -34,13 +34,9 @@ class Rect extends Shape {
   _generateHandlePointsByPoints () {
     const { startPoint, width, height } = this._getZoomAndMoveRect()
     this.handlePoints[0] = { obj: null, point: startPoint }
-    this.handlePoints[1] = { obj: null, point: [startPoint[0] + width / 2, startPoint[1]] }
-    this.handlePoints[2] = { obj: null, point: [startPoint[0] + width, startPoint[1]] }
-    this.handlePoints[3] = { obj: null, point: [startPoint[0] + width, startPoint[1] + height / 2] }
-    this.handlePoints[4] = { obj: null, point: [startPoint[0] + width, startPoint[1] + height] }
-    this.handlePoints[5] = { obj: null, point: [startPoint[0] + width / 2, startPoint[1] + height] }
-    this.handlePoints[6] = { obj: null, point: [startPoint[0], startPoint[1] + height] }
-    this.handlePoints[7] = { obj: null, point: [startPoint[0], startPoint[1] + height / 2] }
+    this.handlePoints[1] = { obj: null, point: [startPoint[0] + width, startPoint[1]] }
+    this.handlePoints[2] = { obj: null, point: [startPoint[0] + width, startPoint[1] + height] }
+    this.handlePoints[3] = { obj: null, point: [startPoint[0], startPoint[1] + height] }
   }
 
   _draw () {
@@ -56,7 +52,7 @@ class Rect extends Shape {
       this.handlePoints[i].obj = this._drawHandlePoint(
         this.handlePoints[i].point[0],
         this.handlePoints[i].point[1],
-        this.handlePointStyle.radius,
+        this.handlePointStyle.width,
         {
           lineWidth: this.handlePointStyle.lineWidth,
           fillStyle: this.handlePointStyle.fillStyle,
@@ -101,25 +97,15 @@ class Rect extends Shape {
           this.startPoint[1] + (y - basePoint[1]) / this.freeDraw.zoomLevel
         ]
       } else if (this.clickedHandlePointIndex === 1) {
-        this.height += (basePoint[1] - y) / this.freeDraw.zoomLevel
-        this.startPoint[1] += (y - basePoint[1]) / this.freeDraw.zoomLevel
-      } else if (this.clickedHandlePointIndex === 2) {
         this.width += (x - basePoint[0]) / this.freeDraw.zoomLevel
         this.height += (basePoint[1] - y) / this.freeDraw.zoomLevel
         this.startPoint[1] += (y - basePoint[1]) / this.freeDraw.zoomLevel
+      } else if (this.clickedHandlePointIndex === 2) {
+        this.width += x - basePoint[0]
+        this.height += y - basePoint[1]
       } else if (this.clickedHandlePointIndex === 3) {
-        this.width += x - basePoint[0]
-      } else if (this.clickedHandlePointIndex === 4) {
-        this.width += x - basePoint[0]
-        this.height += y - basePoint[1]
-      } else if (this.clickedHandlePointIndex === 5) {
-        this.height += y - basePoint[1]
-      } else if (this.clickedHandlePointIndex === 6) {
         this.width += (basePoint[0] - x) / this.freeDraw.zoomLevel
         this.height += (y - basePoint[1]) / this.freeDraw.zoomLevel
-        this.startPoint[0] += (x - basePoint[0]) / this.freeDraw.zoomLevel
-      } else if (this.clickedHandlePointIndex === 7) {
-        this.width += (basePoint[0] - x) / this.freeDraw.zoomLevel
         this.startPoint[0] += (x - basePoint[0]) / this.freeDraw.zoomLevel
       }
     } else if (this.clickedShape) {
@@ -172,4 +158,4 @@ class Rect extends Shape {
   }
 }
 
-module.exports = Rect
+export default Rect

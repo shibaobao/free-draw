@@ -1,8 +1,8 @@
-const {
+import {
   HANDLE_POINT_STYLE,
   EDIT_SHAPE_STYLE,
   SHAPE_STYLE
-} = require('./config')
+} from './config'
 
 class Shape {
   constructor (options) {
@@ -97,9 +97,9 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  _drawHandlePoint (x, y, radius, style) {
+  _drawHandlePoint (x, y, width, style) {
     const handlePoint = new Path2D()
-    handlePoint.arc(x, y, radius, 0, 2 * Math.PI)
+    handlePoint.rect(x - width / 2, y - width / 2, width, width)
     this.freeDraw._updateCtxStyle(style)
     this.freeDraw.ctx.fill(handlePoint)
     this.freeDraw.ctx.stroke(handlePoint)
@@ -121,6 +121,7 @@ class Shape {
     if (!this.shape) {
       return false
     }
+
     return this.freeDraw.ctx.isPointInPath(this.shape, x, y)
   }
 
@@ -159,4 +160,4 @@ class Shape {
   }
 }
 
-module.exports = Shape
+export default Shape
