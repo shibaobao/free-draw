@@ -1,8 +1,11 @@
-const Rect = require('./rect')
+import Rect from './rect'
+
 class FreeDraw {
   constructor (options) {
     this.canvasDOM = options.canvas
     this.eventsCallBack = options.eventsCallBack
+    this.eventsReceive = options.eventsReceive || ['mouseenter', 'mouseleave']
+
     this.ctx = null
 
     // FreeDraw model view/edit
@@ -21,6 +24,9 @@ class FreeDraw {
     this.offsetTop = 0
     this.offsetLeft = 0
     this.transformCenter = [0, 0]
+
+    // events keys map
+    this.eventsKeysMap = {}
 
     this._initFreeDraw()
   }
@@ -66,7 +72,23 @@ class FreeDraw {
         for (let key in this.shapeInCanvas) {
           const shapeObj = this.shapeInCanvas[key]
           if (shapeObj._includes(x, y)) {
-            this.eventsCallBack(event, key)
+            if (!this.eventsKeysMap[key]) {
+              this.eventsKeysMap[key] = 'mouse-enter'
+              if (this.eventsReceive.includes('mouseenter')) {
+                this.eventsCallBack(event, key, 'mouseenter')
+              }
+            } else {
+              if (this.eventsReceive.includes('mousemove')) {
+                this.eventsCallBack(event, key, 'mousemove')
+              }
+            }
+          } else {
+            if (this.eventsKeysMap[key]) {
+              this.eventsKeysMap[key] = undefined
+              if (this.eventsReceive.includes('mouseleave')) {
+                this.eventsCallBack(event, key, 'mouseleave')
+              }
+            }
           }
         }
       }
@@ -174,7 +196,6 @@ class FreeDraw {
 
   _addRect (options) {
     const { id, type, shapeStyle, handlePointStyle, startPoint, width, height } = options
-    console.log(id, type, shapeStyle, handlePointStyle, startPoint, width, height)
     const points = []
     if (startPoint && width && height) {
       points.push(startPoint)
@@ -196,4 +217,4 @@ class FreeDraw {
   }
 }
 
-module.exports = FreeDraw
+export default FreeDraw

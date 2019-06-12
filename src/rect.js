@@ -15,6 +15,13 @@ class Rect extends Shape {
     this.clickedShapePoint = []
     this.clickedHandlePoint = false
 
+    // use for roll back data when cancel editing
+    this.startPointBackup = []
+    this.widthBackup = null
+    this.heightBackup = null
+    this.pointsBackup = []
+    this.pathBackup = ''
+
     this._initRect()
   }
 
@@ -32,7 +39,7 @@ class Rect extends Shape {
    * @memberof Rect
    */
   _generateHandlePointsByPoints () {
-    const { startPoint, width, height } = this._getZoomAndMoveRect()
+    const { startPoint, width, height } = this.getZoomAndMoveRect()
     this.handlePoints[0] = { obj: null, point: startPoint }
     this.handlePoints[1] = { obj: null, point: [startPoint[0] + width, startPoint[1]] }
     this.handlePoints[2] = { obj: null, point: [startPoint[0] + width, startPoint[1] + height] }
@@ -63,7 +70,7 @@ class Rect extends Shape {
   }
 
   _drawRect () {
-    const { startPoint, width, height } = this._getZoomAndMoveRect()
+    const { startPoint, width, height } = this.getZoomAndMoveRect()
     const newRect = new Path2D()
     newRect.rect(startPoint[0], startPoint[1], width, height)
     this.freeDraw._updateCtxStyle(this.shapeStyle)
@@ -127,7 +134,7 @@ class Rect extends Shape {
 
   _handleClick () {}
 
-  _getZoomAndMoveRect () {
+  getZoomAndMoveRect () {
     let width = this.width
     let height = this.height
     let x = this.startPoint[0]
@@ -155,6 +162,46 @@ class Rect extends Shape {
     this.points[2] = [this.startPoint[0] + this.width, this.startPoint[1] + this.height]
     this.points[3] = [this.startPoint[0], this.startPoint[1] + this.height]
     this.path = `M${this.points[0].join(',')}L${this.points[1].join(',')}L${this.points[2].join(',')}L${this.points[3].join(',')}Z`
+  }
+
+  /**
+   * Use for active shape edit model
+   *
+   * @returns
+   * @memberof Shape
+   */
+  editShape () {
+    this.edit = true
+    this.active = true
+    this.freeDraw._updateModel('edit', this.id)
+    this.freeDraw._refreshShapesInCanvas()
+    this.backupData()
+    return this
+  }
+
+  backupData () {
+    this.startPointBackup = JSON.parse(JSON.stringify(this.startPoint))
+    this.widthBackup = this.width
+    this.heightBackup = this.height
+    this.pointsBackup = JSON.parse(JSON.stringify(this.points))
+    this.pathBackup = this.path
+  }
+
+  rollbackData () {
+    this.startPoint = JSON.parse(JSON.stringify(this.startPointBackup))
+    this.width = this.widthBackup
+    this.height = this.heightBackup
+    this.points = JSON.parse(JSON.stringify(this.pointsBackup))
+    this.path = this.pathBackup
+  }
+
+  cancelEdit () {
+    this.edit = false
+    this.active = true
+    this.freeDraw._updateModel('view')
+    this.rollbackData()
+    this.freeDraw._refreshShapesInCanvas()
+    return this
   }
 }
 

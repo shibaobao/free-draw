@@ -149,6 +149,12 @@ class Shape {
     return result
   }
 
+  /**
+   * Finish Shape editing model and save
+   *
+   * @returns
+   * @memberof Shape
+   */
   saveEdit () {
     this.edit = false
     this.active = true
