@@ -180,6 +180,9 @@ class FreeDraw {
   }
 
   addShape (options) {
+    if (this.model === 'edit') {
+      throw new Error(`Can not add another shape in edit model`)
+    }
     const { type, id } = options
     if (!id) {
       throw new Error(`Shape id can not be empty`)

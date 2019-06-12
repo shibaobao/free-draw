@@ -1,4 +1,8 @@
 import Shape from './shape'
+import {
+  EDIT_SHAPE_STYLE,
+  SHAPE_STYLE
+} from './config'
 
 class Rect extends Shape {
   constructor (options) {
@@ -171,6 +175,7 @@ class Rect extends Shape {
    * @memberof Shape
    */
   editShape () {
+    this.shapeStyle = EDIT_SHAPE_STYLE
     this.edit = true
     this.active = true
     this.freeDraw._updateModel('edit', this.id)
@@ -196,6 +201,8 @@ class Rect extends Shape {
   }
 
   cancelEdit () {
+    // TODO add limit -> can only be called after calling editShape method
+    this.shapeStyle = SHAPE_STYLE
     this.edit = false
     this.active = true
     this.freeDraw._updateModel('view')
