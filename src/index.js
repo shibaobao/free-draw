@@ -1,9 +1,12 @@
 import Rect from './rect'
+import Ellipse from './ellipse'
+import Polygon from './polygon'
 
 class FreeDraw {
   constructor (options) {
     this.canvasDOM = options.canvas
     this.eventsCallBack = options.eventsCallBack
+    // ['mouseenter', 'mouseleave', 'drag', 'transform']
     this.eventsReceive = options.eventsReceive || ['mouseenter', 'mouseleave']
 
     this.ctx = null
@@ -43,7 +46,6 @@ class FreeDraw {
     this.canvasDOM.addEventListener('mousedown', this._distributeEvents.bind(this))
     this.canvasDOM.addEventListener('mousemove', this._distributeEvents.bind(this))
     this.canvasDOM.addEventListener('mouseup', this._distributeEvents.bind(this))
-    this.canvasDOM.addEventListener('click', this._distributeEvents.bind(this))
   }
 
   /**
@@ -130,10 +132,16 @@ class FreeDraw {
    * @memberof FreeDraw
    */
   removeShape (shapeId) {
+    console.log(shapeId)
     if (this.shapeInCanvas[shapeId]) {
       delete this.shapeInCanvas[shapeId]
     }
+    if (this.model === 'edit' && this.editingId === shapeId) {
+      this.model = 'view'
+      this.editingId = null
+    }
     this._refreshShapesInCanvas()
+    console.log(this.shapeInCanvas)
     return this
   }
 
@@ -159,11 +167,17 @@ class FreeDraw {
     this.editingId = editingId || null
   }
 
+  /**
+   * Remove all shapes in canvas
+   */
   _clearCanvas () {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
     return this
   }
 
+  /**
+   * Refresh canvas shape by { shapeInCanvas } Object
+   */
   _refreshShapesInCanvas () {
     this._clearCanvas()
     for (let key in this.shapeInCanvas) {
@@ -195,28 +209,52 @@ class FreeDraw {
       this.shapeInCanvas[id] = this._addRect(options)
       return this.shapeInCanvas[id]
     }
+    if (type === 'ellipse') {
+      this.shapeInCanvas[id] = new Ellipse(Object.assign({}, { freeDraw: this }, options))
+      return this.shapeInCanvas[id]
+    }
+    if (type === 'polygon') {
+      this.shapeInCanvas[id] = new Polygon(Object.assign({}, { freeDraw: this }, options))
+      return this.shapeInCanvas[id]
+    }
   }
 
   _addRect (options) {
     const { id, type, shapeStyle, handlePointStyle, startPoint, width, height } = options
-    const points = []
-    if (startPoint && width && height) {
-      points.push(startPoint)
-      points.push([startPoint[0] + width, startPoint[1]])
-      points.push([startPoint[0] + width, startPoint[1] + height])
-      points.push([startPoint[0], startPoint[1] + height])
-    }
+    // const result = this.removeZoomAndMoveRect(width, height, startPoint)
     return new Rect({
       id,
       type,
+      // width: result.width,
+      // height: result.height,
+      // startPoint: result.startPoint,
       width,
       height,
-      points,
       startPoint,
       shapeStyle,
       handlePointStyle,
       freeDraw: this
     })
+  }
+
+  removeZoomAndMoveRect (width, height, startPoint) {
+    width = width / this.zoomLevel
+    height = height / this.zoomLevel
+    let x = startPoint[0]
+    let y = startPoint[1]
+    x = (startPoint[0] - this.transformCenter[0]) / this.zoomLevel + this.transformCenter[0]
+    y = (startPoint[1] - this.transformCenter[1]) / this.zoomLevel + this.transformCenter[1]
+    if (this.offsetLeft !== 0) {
+      x -= this.offsetLeft
+    }
+    if (this.offsetTop !== 0) {
+      y -= this.offsetTop
+    }
+    return {
+      width,
+      height,
+      startPoint: [x, y]
+    }
   }
 }
 

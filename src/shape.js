@@ -15,17 +15,21 @@ class Shape {
     // Shape edit status, if current shape is editing
     this.edit = options.edit || true
 
-    // Shape active status, if current shape is active
-    this.active = options.active || true
-
     // Shape points
     this.points = options.points || []
+
+    // Shape path
+    this.path = options.points || ''
 
     // Shape handle points
     this.handlePoints = []
 
     // Record index if handlepoint clicked
     this.clickedHandlePointIndex = null
+
+    this.clickedShape = false
+    this.clickedShapePoint = []
+    this.clickedHandlePoint = false
 
     // FreeDraw instance reference
     this.freeDraw = options.freeDraw
@@ -79,16 +83,30 @@ class Shape {
           this._handleMouseUp(event)
         }
         break
-      case 'click':
-        if (this._handleClick && typeof this._handleClick === 'function') {
-          this._handleClick(event)
-        }
-        break
     }
   }
 
   /**
-   * Draw handlepoint
+   * Draw Rect Point
+   *
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Number} length
+   * @param {Object} style
+   * @returns
+   * @memberof Shape
+   */
+  _drawRectPoint (x, y, length, style) {
+    const handlePoint = new Path2D()
+    handlePoint.rect(x - length / 2, y - length / 2, length, length)
+    this.freeDraw._updateCtxStyle(style)
+    this.freeDraw.ctx.fill(handlePoint)
+    this.freeDraw.ctx.stroke(handlePoint)
+    return handlePoint
+  }
+
+  /**
+   * Draw Circle Point
    *
    * @param {Number} x
    * @param {Number} y
@@ -97,9 +115,9 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  _drawHandlePoint (x, y, width, style) {
+  _drawCirclePoint (x, y, radius, style) {
     const handlePoint = new Path2D()
-    handlePoint.rect(x - width / 2, y - width / 2, width, width)
+    handlePoint.arc(x, y, radius, 0, 2 * Math.PI, false)
     this.freeDraw._updateCtxStyle(style)
     this.freeDraw.ctx.fill(handlePoint)
     this.freeDraw.ctx.stroke(handlePoint)
@@ -108,6 +126,28 @@ class Shape {
 
   _includes (x, y) {
     return this._pointInHandlePoints(x, y) || this._pointInShape(x, y)
+  }
+
+  _handleMouseDown (event) {
+    const { offsetX: x, offsetY: y } = event
+    if (this._pointInHandlePoints(x, y)) {
+      this.clickedHandlePoint = true
+      this.clickedShapePoint = []
+      this.clickedShape = false
+    } else if (this._pointInShape(x, y)) {
+      this.clickedHandlePoint = false
+      this.clickedShapePoint = [x, y]
+      this.clickedShape = true
+    }
+    if (this.type === 'polygon') {
+      this._polygonMouseDown(event)
+    }
+  }
+
+  _handleMouseUp () {
+    this.clickedShape = false
+    this.clickedHandlePoint = false
+    this.clickedShapePoint = []
   }
 
   /**
@@ -150,19 +190,55 @@ class Shape {
   }
 
   /**
+   * Use for active shape edit model
+   *
+   * @returns
+   * @memberof Shape
+   */
+  editShape () {
+    this.shapeStyle = EDIT_SHAPE_STYLE
+    this.edit = true
+    this.freeDraw._updateModel('edit', this.id)
+    this.freeDraw._refreshShapesInCanvas()
+    this._backupData()
+    return this
+  }
+
+  /**
    * Finish Shape editing model and save
    *
    * @returns
    * @memberof Shape
    */
-  saveEdit () {
+  finish () {
     this.edit = false
-    this.active = true
     this.freeDraw._updateModel('view')
     this.shapeStyle = SHAPE_STYLE
-    this.pointsToPath()
+    if (this._pointsToPath && typeof this._pointsToPath === 'function') {
+      this._pointsToPath()
+    }
     this.freeDraw._refreshShapesInCanvas()
     return this
+  }
+
+  /**
+   * Cancel Shape editing
+   */
+  cancelEdit () {
+    // TODO add limit -> can only be called after calling editShape method
+    this.shapeStyle = SHAPE_STYLE
+    this.edit = false
+    this.freeDraw._updateModel('view')
+    this._rollbackData()
+    this.freeDraw._refreshShapesInCanvas()
+    return this
+  }
+
+  getHandlePointCoordinate (handlePointIndex) {
+    if (handlePointIndex > this.handlePointsLength) {
+      return null
+    }
+    return this.handlePoints[handlePointIndex].point
   }
 }
 

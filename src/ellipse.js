@@ -1,0 +1,158 @@
+import Shape from './shape'
+
+class Ellipse extends Shape {
+  constructor (options) {
+    super(options)
+    this.handlePointsLength = 4
+
+    this.x = options.x
+    this.y = options.y
+    this.radiusX = options.radiusX
+    this.radiusY = options.radiusY
+    this.rotation = options.rotation || 0
+    this.startAngle = options.startAngle || 0
+    this.endAngle = options.endAngle || 2 * Math.PI
+    this.anticlockwise = options.anticlockwise || false
+
+    this.xBackup = null
+    this.yBackup = null
+    this.radiusXBackup = null
+    this.radiusYBackup = null
+    this.rotationBackup = null
+    this.startAngleBackup = null
+    this.endAngleBackup = null
+    this.anticlockwiseBackup = null
+    this._initEllipse()
+  }
+
+  _initEllipse () {
+    this._initShape()
+    if (this.x && this.y && this.radiusX && this.radiusY) {
+      this._draw()
+    }
+  }
+
+  _generateHandlePointsByPoints () {
+    const { x, y, radiusX, radiusY } = this.getZoomAndMove()
+    this.handlePoints[0] = { obj: null, point: [x - radiusX, y - radiusY] }
+    this.handlePoints[1] = { obj: null, point: [x + radiusX, y - radiusY] }
+    this.handlePoints[2] = { obj: null, point: [x + radiusX, y + radiusY] }
+    this.handlePoints[3] = { obj: null, point: [x - radiusX, y + radiusY] }
+  }
+
+  _draw () {
+    this._generateHandlePointsByPoints()
+    this.shape = this._drawEllipse()
+    if (this.edit) {
+      this._drawEllipseHandlePoints()
+    }
+  }
+
+  _drawEllipse () {
+    const { x, y, radiusX, radiusY, startAngle, endAngle, anticlockwise } = this.getZoomAndMove()
+    const newEllipse = new Path2D()
+    newEllipse.ellipse(x, y, radiusX, radiusY, startAngle, endAngle, anticlockwise)
+    this.freeDraw._updateCtxStyle(this.shapeStyle)
+    this.freeDraw.ctx.fill(newEllipse)
+    this.freeDraw.ctx.stroke(newEllipse)
+    return newEllipse
+  }
+
+  _handleMouseMove (event) {
+    const { offsetX: x, offsetY: y } = event
+    if (this.clickedHandlePoint) {
+      const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
+      this.x += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
+      this.y += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
+      if (this.clickedHandlePointIndex === 0) {
+        this.radiusX += (basePoint[0] - x) / 2 * this.freeDraw.zoomLevel
+        this.radiusY += (basePoint[1] - y) / 2 * this.freeDraw.zoomLevel
+      } else if (this.clickedHandlePointIndex === 1) {
+        this.radiusX += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
+        this.radiusY += (basePoint[1] - y) / 2 * this.freeDraw.zoomLevel
+      } else if (this.clickedHandlePointIndex === 2) {
+        this.radiusX += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
+        this.radiusY += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
+      } else if (this.clickedHandlePointIndex === 3) {
+        this.radiusX += (basePoint[0] - x) / 2 * this.freeDraw.zoomLevel
+        this.radiusY += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
+      }
+      if (this.freeDraw.eventsReceive.includes('transform')) {
+        this.freeDraw.eventsCallBack(event, this.id, 'transform')
+      }
+    } else if (this.clickedShape) {
+      this.x += (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel
+      this.y += (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel
+      this.clickedShapePoint = [x, y]
+      if (this.freeDraw.eventsReceive.includes('drag')) {
+        this.freeDraw.eventsCallBack(event, this.id, 'drag')
+      }
+    }
+    this._generateHandlePointsByPoints()
+    this.freeDraw._refreshShapesInCanvas()
+  }
+
+  _drawEllipseHandlePoints () {
+    for (let i = 0; i < this.handlePointsLength; i++) {
+      this.handlePoints[i].obj = this._drawRectPoint(
+        this.handlePoints[i].point[0],
+        this.handlePoints[i].point[1],
+        this.handlePointStyle.width,
+        {
+          lineWidth: this.handlePointStyle.lineWidth,
+          fillStyle: this.handlePointStyle.fillStyle,
+          strokeStyle: this.handlePointStyle.strokeStyle
+        }
+      )
+    }
+  }
+
+  getZoomAndMove () {
+    let x = this.x
+    let y = this.y
+    let radiusX = this.radiusX
+    let radiusY = this.radiusY
+    radiusX = this.radiusX * this.freeDraw.zoomLevel
+    radiusY = this.radiusY * this.freeDraw.zoomLevel
+    if (this.freeDraw.offsetLeft !== 0) {
+      x += this.freeDraw.offsetLeft
+    }
+    if (this.freeDraw.offsetTop !== 0) {
+      y += this.freeDraw.offsetTop
+    }
+    return {
+      x,
+      y,
+      radiusX,
+      radiusY,
+      rotation: this.rotation,
+      startAngle: this.startAngle,
+      endAngle: this.endAngle,
+      anticlockwise: this.anticlockwise
+    }
+  }
+
+  _backupData () {
+    this.xBackup = this.x
+    this.yBackup = this.y
+    this.radiusXBackup = this.radiusX
+    this.radiusYBackup = this.radiusY
+    this.rotationBackup = this.rotation
+    this.startAngleBackup = this.startAngle
+    this.endAngleBackup = this.endAngle
+    this.anticlockwiseBackup = this.anticlockwise
+  }
+
+  _rollbackData () {
+    this.x = this.xBackup
+    this.y = this.yBackup
+    this.radiusX = this.radiusXBackup
+    this.radiusY = this.radiusYBackup
+    this.rotation = this.rotationBackup
+    this.startAngle = this.startAngleBackup
+    this.endAngle = this.endAngleBackup
+    this.anticlockwise = this.anticlockwiseBackup
+  }
+}
+
+export default Ellipse
