@@ -3,7 +3,6 @@ import Shape from './shape'
 class Rect extends Shape {
   constructor (options) {
     super(options)
-    this.handlePointsLength = 4
 
     this.startPoint = options.startPoint || []
     this.width = options.width
@@ -48,7 +47,7 @@ class Rect extends Shape {
   }
 
   _drawRectHandlePoints () {
-    for (let i = 0; i < this.handlePointsLength; i++) {
+    for (let i = 0; i < 4; i++) {
       this.handlePoints[i].obj = this._drawRectPoint(
         this.handlePoints[i].point[0],
         this.handlePoints[i].point[1],
@@ -115,12 +114,10 @@ class Rect extends Shape {
   getZoomAndMove () {
     let width = this.width
     let height = this.height
-    let x = this.startPoint[0]
-    let y = this.startPoint[1]
     width = this.width * this.freeDraw.zoomLevel
     height = this.height * this.freeDraw.zoomLevel
-    x = (this.startPoint[0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
-    y = (this.startPoint[1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
+    let x = (this.startPoint[0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
+    let y = (this.startPoint[1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
     if (this.freeDraw.offsetLeft !== 0) {
       x += this.freeDraw.offsetLeft
     }

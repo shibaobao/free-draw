@@ -83,6 +83,11 @@ class Shape {
           this._handleMouseUp(event)
         }
         break
+      case 'keydown':
+        if (this._handleKeydown && typeof this._handleKeydown === 'function') {
+          this._handleKeydown(event)
+        }
+        break
     }
   }
 
@@ -138,8 +143,7 @@ class Shape {
       this.clickedHandlePoint = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
-    }
-    if (this.type === 'polygon') {
+    } else if (this.type === 'polygon') {
       this._polygonMouseDown(event)
     }
   }
@@ -177,7 +181,7 @@ class Shape {
     let result = false
     if (this.edit) {
       let clickedHandlePointIndex = null
-      for (let i = 0; i < this.handlePointsLength; i++) {
+      for (let i = 0; i < this.handlePoints.length; i++) {
         if (this.freeDraw.ctx.isPointInPath(this.handlePoints[i].obj, x, y)) {
           result = true
           clickedHandlePointIndex = i
@@ -235,10 +239,10 @@ class Shape {
   }
 
   getHandlePointCoordinate (handlePointIndex) {
-    if (handlePointIndex > this.handlePointsLength) {
-      return null
+    if (this.handlePoints[handlePointIndex]) {
+      return this.handlePoints[handlePointIndex].point
     }
-    return this.handlePoints[handlePointIndex].point
+    return null
   }
 }
 

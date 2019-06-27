@@ -4,6 +4,7 @@ class Polygon extends Shape {
   constructor (options) {
     super(options)
 
+    this.pointsBackup = []
     this._initPolygon()
   }
 
@@ -15,8 +16,8 @@ class Polygon extends Shape {
   }
 
   _draw () {
-    this._generateHandlePointsByPoints()
     this.shape = this._drawPolygon()
+    this._generateHandlePointsByPoints()
     if (this.edit) {
       this._drawPolygonHandlePoints()
     }
@@ -29,6 +30,7 @@ class Polygon extends Shape {
    */
   _generateHandlePointsByPoints () {
     const points = this.getZoomAndMove()
+    this.handlePoints = []
     for (let i = 0; i < points.length; i++) {
       this.handlePoints[i] = { obj: null, point: points[i] }
     }
@@ -59,10 +61,35 @@ class Polygon extends Shape {
   }
 
   _polygonMouseDown (event) {
-    // const { offsetX: x, offsetY: y } = event
+    const { offsetX: x, offsetY: y } = event
+    this.points.push([x, y])
+    this.freeDraw._refreshShapesInCanvas()
   }
 
-  _handleMouseMove () {}
+  _handleKeydown (event) {
+    if (this.points.length > 0) {
+      this.points.pop()
+      this.freeDraw._refreshShapesInCanvas()
+    }
+  }
+
+  _handleMouseMove (event) {
+    const { offsetX: x, offsetY: y } = event
+    if (this.clickedHandlePoint) {
+      this.points[this.clickedHandlePointIndex] = [x, y]
+    } else if (this.clickedShape) {
+      const points = []
+      for (let point of this.points) {
+        points.push([
+          point[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel,
+          point[1] + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel
+        ])
+      }
+      this.clickedShapePoint = [x, y]
+      this.points = points
+    }
+    this.freeDraw._refreshShapesInCanvas()
+  }
 
   _polygonMouseUp () {}
 
@@ -82,8 +109,16 @@ class Polygon extends Shape {
     return points
   }
 
+  _backupData () {
+    this.pointsBackup = JSON.parse(JSON.stringify(this.points))
+  }
+
+  _rollbackData () {
+    this.points = JSON.parse(JSON.stringify(this.pointsBackup))
+  }
+
   getPath () {
-    return 'M' + this.points.map(item => item.join(',')).join('L') + 'Z'
+    return 'M' + this.getZoomAndMove().map(item => item.join(',')).join('L') + 'Z'
   }
 }
 

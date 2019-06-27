@@ -3,7 +3,6 @@ import Shape from './shape'
 class Ellipse extends Shape {
   constructor (options) {
     super(options)
-    this.handlePointsLength = 4
 
     this.x = options.x
     this.y = options.y
@@ -93,7 +92,7 @@ class Ellipse extends Shape {
   }
 
   _drawEllipseHandlePoints () {
-    for (let i = 0; i < this.handlePointsLength; i++) {
+    for (let i = 0; i < 4; i++) {
       this.handlePoints[i].obj = this._drawRectPoint(
         this.handlePoints[i].point[0],
         this.handlePoints[i].point[1],
@@ -108,12 +107,10 @@ class Ellipse extends Shape {
   }
 
   getZoomAndMove () {
-    let x = this.x
-    let y = this.y
-    let radiusX = this.radiusX
-    let radiusY = this.radiusY
-    radiusX = this.radiusX * this.freeDraw.zoomLevel
-    radiusY = this.radiusY * this.freeDraw.zoomLevel
+    let radiusX = this.radiusX * this.freeDraw.zoomLevel
+    let radiusY = this.radiusY * this.freeDraw.zoomLevel
+    let x = (this.x - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
+    let y = (this.y - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
     if (this.freeDraw.offsetLeft !== 0) {
       x += this.freeDraw.offsetLeft
     }

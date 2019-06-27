@@ -46,6 +46,7 @@ class FreeDraw {
     this.canvasDOM.addEventListener('mousedown', this._distributeEvents.bind(this))
     this.canvasDOM.addEventListener('mousemove', this._distributeEvents.bind(this))
     this.canvasDOM.addEventListener('mouseup', this._distributeEvents.bind(this))
+    window.document.addEventListener('keydown', this._distributeEvents.bind(this))
   }
 
   /**
@@ -57,6 +58,9 @@ class FreeDraw {
   _distributeEvents (event) {
     const { type, offsetX: x, offsetY: y } = event
     if (this.model === 'view') {
+      if (type === 'keydown') {
+        return
+      }
       // Only check if user clicked shape
       if (type === 'mousedown') {
         for (let shapeKey in this.shapeInCanvas) {
@@ -132,7 +136,6 @@ class FreeDraw {
    * @memberof FreeDraw
    */
   removeShape (shapeId) {
-    console.log(shapeId)
     if (this.shapeInCanvas[shapeId]) {
       delete this.shapeInCanvas[shapeId]
     }
@@ -141,7 +144,6 @@ class FreeDraw {
       this.editingId = null
     }
     this._refreshShapesInCanvas()
-    console.log(this.shapeInCanvas)
     return this
   }
 
@@ -221,16 +223,13 @@ class FreeDraw {
 
   _addRect (options) {
     const { id, type, shapeStyle, handlePointStyle, startPoint, width, height } = options
-    // const result = this.removeZoomAndMoveRect(width, height, startPoint)
+    const result = this.removeZoomAndMoveRect(width, height, startPoint)
     return new Rect({
       id,
       type,
-      // width: result.width,
-      // height: result.height,
-      // startPoint: result.startPoint,
-      width,
-      height,
-      startPoint,
+      width: result.width,
+      height: result.height,
+      startPoint: result.startPoint,
       shapeStyle,
       handlePointStyle,
       freeDraw: this
@@ -242,14 +241,14 @@ class FreeDraw {
     height = height / this.zoomLevel
     let x = startPoint[0]
     let y = startPoint[1]
-    x = (startPoint[0] - this.transformCenter[0]) / this.zoomLevel + this.transformCenter[0]
-    y = (startPoint[1] - this.transformCenter[1]) / this.zoomLevel + this.transformCenter[1]
     if (this.offsetLeft !== 0) {
       x -= this.offsetLeft
     }
     if (this.offsetTop !== 0) {
       y -= this.offsetTop
     }
+    x = ((x - this.transformCenter[0]) / this.zoomLevel) + this.transformCenter[0]
+    y = ((y - this.transformCenter[1]) / this.zoomLevel) + this.transformCenter[1]
     return {
       width,
       height,
