@@ -4,12 +4,14 @@ import Polygon from './polygon'
 
 class FreeDraw {
   constructor (options) {
+    this.ctx = null
     this.canvasDOM = options.canvas
+
+    // Shape events callback
     this.eventsCallBack = options.eventsCallBack
+
     // ['mouseenter', 'mouseleave', 'drag', 'transform']
     this.eventsReceive = options.eventsReceive || ['mouseenter', 'mouseleave']
-
-    this.ctx = null
 
     // FreeDraw model view/edit
     this.model = 'view'
@@ -58,6 +60,7 @@ class FreeDraw {
   _distributeEvents (event) {
     const { type, offsetX: x, offsetY: y } = event
     if (this.model === 'view') {
+      // ignore keydown event when in view model
       if (type === 'keydown') {
         return
       }
@@ -117,7 +120,7 @@ class FreeDraw {
   }
 
   /**
-   * Update CTX style
+   * Update ctx style
    *
    * @param {Object} style
    * @memberof FreeDraw
