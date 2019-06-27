@@ -9,6 +9,8 @@ English | [简体中文](README-zh_CN.md)
 [![npm](https://img.shields.io/npm/dt/free-draw.svg)](https://www.npmjs.com/package/free-draw)
 [![npm](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/shibaobao/free-draw/blob/master/LICENSE)
 
+Free draw with canvas! Rectangle, circle, ellipse and polygon. Support zoom and offset!
+
 # Installation
 
 Using npm:
