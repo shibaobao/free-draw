@@ -37,16 +37,16 @@ const rect = freeDraw.addShape({ id: 'rect-1', type: 'rect', startPoint: [50, 50
 </script>
 ```
 
-# Document
+# API Document
 
 ## Class - FreeDraw(options)
 
-- {Object} options:
+- options {Object}:
   - canvas: DOM Element `required`
   - eventsCallBack: {Function} Events hook function
   - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`>
 
-- Returns: {Object} FreeDraw
+- Returns: FreeDraw {Object}
 
 - Usage:
 ```js
@@ -56,4 +56,9 @@ const freeDraw = new FreeDraw({ canvas: document.getElementById('canvas') })
 ## Object - freeDraw
 
 - Attributes
-  - id: 
+  - canvas: DOM Element `required`
+  - eventsCallBack: {Function} Events hook function
+  - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`>
+  - model: {String} Current model <`view`|`edit`>
+  - editingId: {String} Current editing shape id
+  - shapeInCanvas: {Object} Shapes in cavas
