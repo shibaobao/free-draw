@@ -26,7 +26,7 @@ HTML:
 <canvas id="canvas" width="800" height="600"></canvas>
 ```
 
-JS
+JS:
 ```html
 <script>
 import FreeDraw from 'free-draw'
@@ -36,3 +36,24 @@ const rect = freeDraw.addShape({ id: 'rect-1', type: 'rect', startPoint: [50, 50
 
 </script>
 ```
+
+# Document
+
+## Class - FreeDraw(options)
+
+- {Object} options:
+  - canvas: DOM Element `required`
+  - eventsCallBack: {Function} Events hook function
+  - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`>
+
+- Returns: {Object} FreeDraw
+
+- Usage:
+```js
+const freeDraw = new FreeDraw({ canvas: document.getElementById('canvas') })
+```
+
+## Object - freeDraw
+
+- Attributes
+  - id: 
