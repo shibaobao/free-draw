@@ -1,6 +1,6 @@
 import Shape from './shape'
 
-KEYCODE_BACKSPACE = 8
+const KEYCODE_BACKSPACE = 8
 
 class Polygon extends Shape {
   constructor (options) {
