@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    app: ['./src/index.js']
+    FreeDraw: ['./src/index.js']
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()

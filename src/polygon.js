@@ -6,6 +6,9 @@ class Polygon extends Shape {
   constructor (options) {
     super(options)
 
+    this.temporaryPoints = []
+    this.temporaryPointsFollow = true
+
     this.pointsBackup = []
     this._initPolygon()
   }
@@ -52,7 +55,7 @@ class Polygon extends Shape {
       point.obj = this._drawCirclePoint(
         point.point[0],
         point.point[1],
-        this.handlePointStyle.width,
+        this.handlePointStyle.radius,
         {
           lineWidth: this.handlePointStyle.lineWidth,
           fillStyle: this.handlePointStyle.fillStyle,
@@ -62,17 +65,23 @@ class Polygon extends Shape {
     }
   }
 
-  _polygonMouseDown (event) {
-    const { offsetX: x, offsetY: y } = event
-    this.points.push([x, y])
-    this.freeDraw._refreshShapesInCanvas()
-  }
-
   _handleKeydown (event) {
     if (this.points.length > 0 && event.keyCode === KEYCODE_BACKSPACE) {
       this.points.pop()
       this.freeDraw._refreshShapesInCanvas()
     }
+  }
+
+  _polygonMouseDown (event) {
+    const { offsetX: x, offsetY: y } = event
+    if (this.clickedHandlePoint) {
+      this.temporaryPointsFollow = false
+      this.temporaryPoints = []
+    } else {
+      this.temporaryPointsFollow = true
+      this.points.push([x, y])
+    }
+    this.freeDraw._refreshShapesInCanvas()
   }
 
   _handleMouseMove (event) {
@@ -89,17 +98,23 @@ class Polygon extends Shape {
       }
       this.clickedShapePoint = [x, y]
       this.points = points
+    } else {
+      if (this.temporaryPointsFollow) {
+        this.temporaryPoints = [[x, y]]
+      }
     }
     this.freeDraw._refreshShapesInCanvas()
   }
 
-  _polygonMouseUp () {}
-
-  getZoomAndMove () {
+  getZoomAndMove (withTemporaryPoints) {
     const points = []
-    for (let i = 0; i < this.points.length; i++) {
-      let x = (this.points[i][0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
-      let y = (this.points[i][1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
+    let allPoints = this.points
+    if (withTemporaryPoints) {
+      allPoints = allPoints.concat(this.temporaryPoints)
+    }
+    for (let i = 0; i < allPoints.length; i++) {
+      let x = (allPoints[i][0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
+      let y = (allPoints[i][1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
       if (this.freeDraw.offsetLeft !== 0) {
         x += this.freeDraw.offsetLeft
       }
@@ -120,7 +135,7 @@ class Polygon extends Shape {
   }
 
   getPath () {
-    return 'M' + this.getZoomAndMove().map(item => item.join(',')).join('L') + 'Z'
+    return 'M' + this.getZoomAndMove(true).map(item => item.join(',')).join('L') + 'Z'
   }
 }
 

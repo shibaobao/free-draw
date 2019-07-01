@@ -1,5 +1,5 @@
 import {
-  HANDLE_POINT_STYLE,
+  HANDLE_POINT_CIRCLE_STYLE,
   EDIT_SHAPE_STYLE,
   SHAPE_STYLE
 } from './config'
@@ -52,7 +52,7 @@ class Shape {
   _initShape () {
     // Set default style for shaape
     if (!this.handlePointStyle) {
-      this.handlePointStyle = HANDLE_POINT_STYLE
+      this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     }
     if (!this.shapeStyle) {
       this.shapeStyle = EDIT_SHAPE_STYLE
@@ -139,6 +139,9 @@ class Shape {
       this.clickedHandlePoint = true
       this.clickedShapePoint = []
       this.clickedShape = false
+      if (this.type === 'polygon') {
+        this._polygonMouseDown(event)
+      }
     } else if (this._pointInShape(x, y)) {
       this.clickedHandlePoint = false
       this.clickedShapePoint = [x, y]
@@ -165,7 +168,11 @@ class Shape {
     if (!this.shape) {
       return false
     }
-
+    for (let point of this.temporaryPoints) {
+      if (x === point[0] && y === point[1]) {
+        return false
+      }
+    }
     return this.freeDraw.ctx.isPointInPath(this.shape, x, y)
   }
 
