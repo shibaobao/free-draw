@@ -1,5 +1,7 @@
 import Shape from './shape'
 
+KEYCODE_BACKSPACE = 8
+
 class Polygon extends Shape {
   constructor (options) {
     super(options)
@@ -67,7 +69,7 @@ class Polygon extends Shape {
   }
 
   _handleKeydown (event) {
-    if (this.points.length > 0) {
+    if (this.points.length > 0 && event.keyCode === KEYCODE_BACKSPACE) {
       this.points.pop()
       this.freeDraw._refreshShapesInCanvas()
     }
