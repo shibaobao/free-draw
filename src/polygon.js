@@ -1,4 +1,5 @@
 import Shape from './shape'
+import { HANDLE_POINT_CIRCLE_STYLE } from './config'
 
 const KEYCODE_BACKSPACE = 8
 
@@ -13,6 +14,7 @@ class Polygon extends Shape {
   }
 
   _initPolygon () {
+    this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     this._initShape()
     if (this.points.length > 0) {
       this._draw()
@@ -135,6 +137,10 @@ class Polygon extends Shape {
 
   getPath () {
     return 'M' + this.getZoomAndMove(true).map(item => item.join(',')).join('L') + 'Z'
+  }
+
+  _pointsToPath () {
+    this.path = 'M' + this.points.map(item => item.join(',')).join('L') + 'Z'
   }
 }
 

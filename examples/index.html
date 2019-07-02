@@ -16,7 +16,10 @@
   <script src="../build/FreeDraw.js"></script>
   <script>
     const freeDraw = new FreeDraw.default({ canvas: document.getElementById('canvas') });
-    const polygon = freeDraw.addShape({ id: 'polygon-1', type: 'ellipse', x: 200, y: 200, radiusX: 100, radiusY: 100 });
+    const polygon = freeDraw.addShape({ id: 'polygon-1', type: 'ellipse' });
+    window.setTimeout(() => {
+      console.log(polygon.finish())
+    }, 5 * 1000)
   </script>
 </body>
 </html>

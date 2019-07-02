@@ -173,6 +173,19 @@ class Ellipse extends Shape {
     this.endAngle = this.endAngleBackup
     this.anticlockwise = this.anticlockwiseBackup
   }
+
+  _pointsToPath () {
+    this.path = JSON.stringify({
+      x: this.x,
+      y: this.y,
+      radiusX: this.radiusX,
+      radiusY: this.radiusY,
+      rotation: this.rotation,
+      startAngle: this.startAngle,
+      endAngle: this.startAngle,
+      anticlockwise: this.anticlockwise
+    })
+  }
 }
 
 export default Ellipse

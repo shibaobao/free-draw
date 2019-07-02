@@ -1,7 +1,5 @@
 import Shape from './shape'
 
-import { HANDLE_POINT_CIRCLE_STYLE } from './config'
-
 class Rect extends Shape {
   constructor (options) {
     super(options)
@@ -21,7 +19,6 @@ class Rect extends Shape {
   }
 
   _initRect () {
-    this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     this._initShape()
     if (this.startPoint.length > 0 && this.width && this.height) {
       this._draw()

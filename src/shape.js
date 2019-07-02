@@ -20,7 +20,7 @@ class Shape {
     this.temporaryPoints = []
 
     // Shape path
-    this.path = options.points || ''
+    this.path = options.path || ''
 
     // Shape handle points
     this.handlePoints = []
