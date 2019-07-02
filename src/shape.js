@@ -1,5 +1,5 @@
 import {
-  HANDLE_POINT_CIRCLE_STYLE,
+  HANDLE_POINT_STYLE,
   EDIT_SHAPE_STYLE,
   SHAPE_STYLE
 } from './config'
@@ -53,7 +53,7 @@ class Shape {
   _initShape () {
     // Set default style for shaape
     if (!this.handlePointStyle) {
-      this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
+      this.handlePointStyle = HANDLE_POINT_STYLE
     }
     if (!this.shapeStyle) {
       this.shapeStyle = EDIT_SHAPE_STYLE
@@ -103,6 +103,7 @@ class Shape {
    * @memberof Shape
    */
   _drawRectPoint (x, y, length, style) {
+    console.log(x, y, length, style)
     const handlePoint = new Path2D()
     handlePoint.rect(x - length / 2, y - length / 2, length, length)
     this.freeDraw._updateCtxStyle(style)

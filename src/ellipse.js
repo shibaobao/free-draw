@@ -30,6 +30,7 @@ class Ellipse extends Shape {
   }
 
   _initEllipse () {
+    this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     this._initShape()
     if (this.x && this.y && this.radiusX && this.radiusY) {
       this._draw()

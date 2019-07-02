@@ -1,5 +1,7 @@
 import Shape from './shape'
 
+import { HANDLE_POINT_CIRCLE_STYLE } from './config'
+
 class Rect extends Shape {
   constructor (options) {
     super(options)
@@ -47,7 +49,7 @@ class Rect extends Shape {
   }
 
   _drawRectHandlePoints () {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.handlePoints.length; i++) {
       this.handlePoints[i].obj = this._drawRectPoint(
         this.handlePoints[i].point[0],
         this.handlePoints[i].point[1],
