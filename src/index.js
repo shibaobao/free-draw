@@ -197,10 +197,18 @@ class FreeDraw {
   }
 
   zoomAndOffset (zoomLevel, transformCenter, offsetLeft, offsetTop) {
-    this.zoomLevel = zoomLevel
-    this.offsetTop = offsetTop
-    this.offsetLeft = offsetLeft
-    this.transformCenter = transformCenter
+    if (zoomLevel) {
+      this.zoomLevel = zoomLevel
+    }
+    if (offsetTop) {
+      this.offsetTop = offsetTop
+    }
+    if (offsetLeft) {
+      this.offsetLeft = offsetLeft
+    }
+    if (transformCenter) {
+      this.transformCenter = transformCenter
+    }
     this._refreshShapesInCanvas()
   }
 
