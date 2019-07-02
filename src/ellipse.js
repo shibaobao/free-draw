@@ -30,7 +30,6 @@ class Ellipse extends Shape {
   }
 
   _initEllipse () {
-    this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     this._initShape()
     if (this.x && this.y && this.radiusX && this.radiusY) {
       this._draw()
@@ -58,8 +57,8 @@ class Ellipse extends Shape {
     this._generateHandleLinesByPoints()
     this._generateHandlePointsByPoints()
     if (this.edit) {
-      this._drawEllipseHandlePoints()
       this._drawEllipseHandleLines()
+      this._drawEllipseHandlePoints()
     }
   }
 
@@ -74,7 +73,9 @@ class Ellipse extends Shape {
   }
 
   _handleMouseMove (event) {
-    const { offsetX: x, offsetY: y } = event
+    let { offsetX: x, offsetY: y } = event
+    if (Math.abs(x) > Math.abs(y)) { y = x
+    } else { x = y }
     if (this.clickedHandlePoint) {
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       this.x += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
@@ -124,7 +125,7 @@ class Ellipse extends Shape {
 
   _drawEllipseHandleLines () {
     for (let i = 0; i < this.handleLines.length; i++) {
-      this.handleLines[i].obj = this._drawLine(this.handleLines[i].startPoint, this.handleLines[i].startPoint, )
+      this.handleLines[i].obj = this._drawLine(this.handleLines[i].startPoint, this.handleLines[i].endPoint, HANDLE_LINE_STYLE)
     }
   }
 

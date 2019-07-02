@@ -103,7 +103,6 @@ class Shape {
    * @memberof Shape
    */
   _drawRectPoint (x, y, length, style) {
-    console.log(x, y, length, style)
     const handlePoint = new Path2D()
     handlePoint.rect(x - length / 2, y - length / 2, length, length)
     this.freeDraw._updateCtxStyle(style)
@@ -118,12 +117,12 @@ class Shape {
    * @param {*} endPoint 
    */
   _drawLine (startPoint, endPoint, style) {
-    const path = `M${startPoint[0]}, ${startPoint[1]}L${endPoint[0]}, ${endPoint[1]}Z`
-    const newLine = new Path2D(path)
+    const path = `M${startPoint[0]},${startPoint[1]}L${endPoint[0]},${endPoint[1]}`
+    const newPath = new Path2D(path)
     this.freeDraw._updateCtxStyle(style)
-    this.freeDraw.ctx.fill(newLine)
-    this.freeDraw.ctx.stroke(newLine)
-    return newLine
+    this.freeDraw.ctx.fill(newPath)
+    this.freeDraw.ctx.stroke(newPath)
+    return newPath
   }
 
   /**

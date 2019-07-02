@@ -126,9 +126,15 @@ class FreeDraw {
    * @memberof FreeDraw
    */
   _updateCtxStyle (style) {
-    this.ctx.lineWidth = style.lineWidth
-    this.ctx.fillStyle = style.fillStyle
-    this.ctx.strokeStyle = style.strokeStyle
+    if (style.lineWidth) {
+      this.ctx.lineWidth = style.lineWidth
+    }
+    if (style.fillStyle) {
+      this.ctx.fillStyle = style.fillStyle
+    }
+    if (style.strokeStyle) {
+      this.ctx.strokeStyle = style.strokeStyle
+    }
   }
 
   /**
