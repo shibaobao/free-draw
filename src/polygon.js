@@ -6,7 +6,6 @@ class Polygon extends Shape {
   constructor (options) {
     super(options)
 
-    this.temporaryPoints = []
     this.temporaryPointsFollow = true
 
     this.pointsBackup = []
