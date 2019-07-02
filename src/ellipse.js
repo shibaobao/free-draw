@@ -75,11 +75,11 @@ class Ellipse extends Shape {
   _handleMouseMove (event) {
     let { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
-      if (Math.abs(x) > Math.abs(y)) {
-        y = x
-      } else {
-        x = y
-      }
+      // if (Math.abs(x) > Math.abs(y)) {
+      //   y = x
+      // } else {
+      //   x = y
+      // }
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       this.x += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
       this.y += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
