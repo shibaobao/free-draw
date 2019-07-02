@@ -112,6 +112,20 @@ class Shape {
   }
 
   /**
+   * Draw line
+   * @param {*} startPoint 
+   * @param {*} endPoint 
+   */
+  _drawLine (startPoint, endPoint, style) {
+    const path = `M${startPoint[0]}, ${startPoint[1]}L${endPoint[0]}, ${endPoint[1]}Z`
+    const newLine = new Path2D(path)
+    this.freeDraw._updateCtxStyle(style)
+    this.freeDraw.ctx.fill(newLine)
+    this.freeDraw.ctx.stroke(newLine)
+    return newLine
+  }
+
+  /**
    * Draw Circle Point
    *
    * @param {Number} x

@@ -1,5 +1,7 @@
 import Shape from './shape'
 
+import { HANDLE_LINE_STYLE } from './config'
+
 class Ellipse extends Shape {
   constructor (options) {
     super(options)
@@ -21,6 +23,9 @@ class Ellipse extends Shape {
     this.startAngleBackup = null
     this.endAngleBackup = null
     this.anticlockwiseBackup = null
+
+    this.handleLines = []
+
     this._initEllipse()
   }
 
@@ -39,11 +44,21 @@ class Ellipse extends Shape {
     this.handlePoints[3] = { obj: null, point: [x - radiusX, y + radiusY] }
   }
 
+  _generateHandleLinesByPoints () {
+    const { x, y, radiusX, radiusY } = this.getZoomAndMove()
+    this.handleLines[0] = { obj: null, startPoint: [x - radiusX, y - radiusY], endPoint: [x + radiusX, y - radiusY] }
+    this.handleLines[1] = { obj: null, startPoint: [x + radiusX, y - radiusY], endPoint: [x + radiusX, y + radiusY] }
+    this.handleLines[2] = { obj: null, startPoint: [x + radiusX, y + radiusY], endPoint: [x - radiusX, y + radiusY] }
+    this.handleLines[3] = { obj: null, startPoint: [x - radiusX, y + radiusY], endPoint: [x - radiusX, y - radiusY] }
+  }
+
   _draw () {
-    this._generateHandlePointsByPoints()
     this.shape = this._drawEllipse()
+    this._generateHandleLinesByPoints()
+    this._generateHandlePointsByPoints()
     if (this.edit) {
       this._drawEllipseHandlePoints()
+      this._drawEllipseHandleLines()
     }
   }
 
@@ -92,7 +107,7 @@ class Ellipse extends Shape {
   }
 
   _drawEllipseHandlePoints () {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.handlePoints.length; i++) {
       this.handlePoints[i].obj = this._drawRectPoint(
         this.handlePoints[i].point[0],
         this.handlePoints[i].point[1],
@@ -103,6 +118,12 @@ class Ellipse extends Shape {
           strokeStyle: this.handlePointStyle.strokeStyle
         }
       )
+    }
+  }
+
+  _drawEllipseHandleLines () {
+    for (let i = 0; i < this.handleLines.length; i++) {
+      this.handleLines[i].obj = this._drawLine(this.handleLines[i].startPoint, this.handleLines[i].startPoint, )
     }
   }
 

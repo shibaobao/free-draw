@@ -30,3 +30,8 @@ export const SHAPE_STYLE = {
   fillStyle: 'rgba(14, 113, 235, 0.8)',
   strokeStyle: 'rgba(14, 113, 235, 0.8)'
 }
+
+export const HANDLE_LINE_STYLE = {
+  lineWidth: 1,
+  strokeStyle: lineColor
+}
