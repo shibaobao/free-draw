@@ -80,7 +80,7 @@ class Polygon extends Shape {
       this.temporaryPoints = []
     } else {
       this.temporaryPointsFollow = true
-      this.points.push([x, y])
+      this.points.push(this.removePointZoomAndMove([x, y]))
     }
     this.freeDraw._refreshShapesInCanvas()
   }
@@ -101,7 +101,7 @@ class Polygon extends Shape {
       this.points = points
     } else {
       if (this.temporaryPointsFollow) {
-        this.temporaryPoints = [[x, y]]
+        this.temporaryPoints = [this.removePointZoomAndMove([x, y])]
       }
     }
     this.freeDraw._refreshShapesInCanvas()
@@ -125,6 +125,13 @@ class Polygon extends Shape {
       points.push([x, y])
     }
     return points
+  }
+
+  removePointZoomAndMove ([x, y]) {
+    return [
+      ((x - this.freeDraw.transformCenter[0]) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[0],
+      ((y - this.freeDraw.transformCenter[1]) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[1]
+    ]
   }
 
   _backupData () {

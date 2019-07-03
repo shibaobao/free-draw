@@ -161,6 +161,9 @@ class Shape {
       this.clickedHandlePoint = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
+      if (this.type === 'polygon') {
+        this._polygonMouseDown(event)
+      }
     } else if (this.type === 'polygon') {
       this._polygonMouseDown(event)
     }
