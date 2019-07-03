@@ -78,6 +78,7 @@ class Polygon extends Shape {
     if (this.clickedHandlePoint) {
       this.temporaryPointsFollow = false
       this.temporaryPoints = []
+      this.temporaryPointsWithoutZoomAndOffset = []
     } else {
       this.temporaryPointsFollow = true
       this.points.push(this.removePointZoomAndMove([x, y]))
@@ -102,6 +103,7 @@ class Polygon extends Shape {
     } else {
       if (this.temporaryPointsFollow) {
         this.temporaryPoints = [this.removePointZoomAndMove([x, y])]
+        this.temporaryPointsWithoutZoomAndOffset = [[x, y]]
       }
     }
     this.freeDraw._refreshShapesInCanvas()

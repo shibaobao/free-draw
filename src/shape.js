@@ -18,6 +18,7 @@ class Shape {
     // Shape points
     this.points = options.points || []
     this.temporaryPoints = []
+    this.temporaryPointsWithoutZoomAndOffset = []
 
     // Shape path
     this.path = options.path || ''
@@ -161,9 +162,9 @@ class Shape {
       this.clickedHandlePoint = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
-      if (this.type === 'polygon') {
-        this._polygonMouseDown(event)
-      }
+      // if (this.type === 'polygon') {
+      //   this._polygonMouseDown(event)
+      // }
     } else if (this.type === 'polygon') {
       this._polygonMouseDown(event)
     }
@@ -186,7 +187,7 @@ class Shape {
     if (!this.shape) {
       return false
     }
-    for (let point of this.temporaryPoints) {
+    for (let point of this.temporaryPointsWithoutZoomAndOffset) {
       if (x === point[0] && y === point[1]) {
         return false
       }
