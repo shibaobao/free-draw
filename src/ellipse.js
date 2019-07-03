@@ -185,7 +185,7 @@ class Ellipse extends Shape {
       radiusY: this.radiusY,
       rotation: this.rotation,
       startAngle: this.startAngle,
-      endAngle: this.startAngle,
+      endAngle: this.endAngle,
       anticlockwise: this.anticlockwise
     })
   }
