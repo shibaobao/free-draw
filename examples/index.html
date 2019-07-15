@@ -16,7 +16,7 @@
   <script src="../build/FreeDraw.js"></script>
   <script>
     const freeDraw = new FreeDraw.default({ canvas: document.getElementById('canvas') });
-    freeDraw.zoomAndOffset(2.0)
+    freeDraw.zoomAndOffset(2.0, [0, 0], 100, 100)
     const polygon = freeDraw.addShape({ id: 'polygon-1', type: 'polygon'});
   </script>
 </body>

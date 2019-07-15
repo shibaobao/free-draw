@@ -131,8 +131,8 @@ class Polygon extends Shape {
 
   removePointZoomAndMove ([x, y]) {
     return [
-      ((x - this.freeDraw.transformCenter[0]) / this.freeDraw.zoomLevel) - this.freeDraw.transformCenter[0],
-      ((y - this.freeDraw.transformCenter[1]) / this.freeDraw.zoomLevel) - this.freeDraw.transformCenter[1]
+      ((x - this.freeDraw.transformCenter[0] - this.freeDraw.offsetLeft) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[0],
+      ((y - this.freeDraw.transformCenter[1] - this.freeDraw.offsetTop) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[1]
     ]
   }
 
