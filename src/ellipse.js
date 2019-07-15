@@ -75,27 +75,30 @@ class Ellipse extends Shape {
   _handleMouseMove (event) {
     let { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
-      // if (Math.abs(x) > Math.abs(y)) {
-      //   y = x
-      // } else {
-      //   x = y
-      // }
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       this.x += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
       this.y += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
-      if (this.clickedHandlePointIndex === 0) {
-        this.radiusX += (basePoint[0] - x) / 2 * this.freeDraw.zoomLevel
-        this.radiusY += (basePoint[1] - y) / 2 * this.freeDraw.zoomLevel
-      } else if (this.clickedHandlePointIndex === 1) {
-        this.radiusX += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
-        this.radiusY += (basePoint[1] - y) / 2 * this.freeDraw.zoomLevel
-      } else if (this.clickedHandlePointIndex === 2) {
-        this.radiusX += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
-        this.radiusY += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
-      } else if (this.clickedHandlePointIndex === 3) {
-        this.radiusX += (basePoint[0] - x) / 2 * this.freeDraw.zoomLevel
-        this.radiusY += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
+      if ([0, 1, 2, 3].includes(this.clickedHandlePointIndex)) {
+        let radiusX = basePoint[0] - x
+        let radiusY = basePoint[1] - y
+        if (this.clickedHandlePointIndex === 1) {
+          radiusX = x - basePoint[0]
+        }
+        if (this.clickedHandlePointIndex === 2) {
+          radiusX = x - basePoint[0]
+          radiusY = y - basePoint[1]
+        }
+        if (this.clickedHandlePointIndex === 3) {
+          radiusY = y - basePoint[1]
+        }
+        radiusX = this.radiusX + radiusX / 2 * this.freeDraw.zoomLevel
+        radiusY = this.radiusY + radiusY / 2 * this.freeDraw.zoomLevel
+        if (radiusX > 0 && radiusY > 0) {
+          this.radiusX = radiusX
+          this.radiusY = radiusY
+        }        
       }
+
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
