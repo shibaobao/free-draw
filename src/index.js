@@ -239,14 +239,20 @@ class FreeDraw {
   }
 
   _addRect (options) {
-    const { id, type, shapeStyle, handlePointStyle, startPoint, width, height } = options
-    const result = this.removeZoomAndMoveRect(width, height, startPoint)
+    let { id, type, shapeStyle, handlePointStyle, startPoint, width, height, transform } = options
+    if (transform) {
+      const result = this.removeZoomAndMoveRect(width, height, startPoint)
+      width = result.width
+      height = result.height
+      startPoint = result.startPoint
+    }
+    
     return new Rect({
       id,
       type,
-      width: result.width,
-      height: result.height,
-      startPoint: result.startPoint,
+      width,
+      height,
+      startPoint,
       shapeStyle,
       handlePointStyle,
       freeDraw: this
