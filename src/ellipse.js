@@ -76,8 +76,6 @@ class Ellipse extends Shape {
     let { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
-      this.x += (x - basePoint[0]) / 2 * this.freeDraw.zoomLevel
-      this.y += (y - basePoint[1]) / 2 * this.freeDraw.zoomLevel
       if ([0, 1, 2, 3].includes(this.clickedHandlePointIndex)) {
         let radiusX = basePoint[0] - x
         let radiusY = basePoint[1] - y
