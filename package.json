@@ -1,6 +1,6 @@
 {
   "name": "free-draw",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Free draw shapes use canvas",
   "main": "index.js",
   "directories": {
