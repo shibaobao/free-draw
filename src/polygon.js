@@ -46,7 +46,7 @@ class Polygon extends Shape {
 
   _generateBorderPoints () {
     let left, right, top, bottom
-    const points = this.points
+    const points = this.getZoomAndMove()
     for (let i = 0; i < points.length; i++) {
       if (left) {
         if (points[i][0] < left) {
