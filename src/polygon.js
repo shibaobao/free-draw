@@ -10,6 +10,7 @@ class Polygon extends Shape {
     this.temporaryPointsFollow = true
 
     this.pointsBackup = []
+    this.borderPoints = []
     this._initPolygon()
   }
 
@@ -24,6 +25,7 @@ class Polygon extends Shape {
   _draw () {
     this.shape = this._drawPolygon()
     this._generateHandlePointsByPoints()
+    this._generateBorderPoints()
     if (this.edit) {
       this._drawPolygonHandlePoints()
     }
@@ -40,6 +42,47 @@ class Polygon extends Shape {
     for (let i = 0; i < points.length; i++) {
       this.handlePoints[i] = { obj: null, point: points[i] }
     }
+  }
+
+  _generateBorderPoints () {
+    let left, right, top, bottom
+    const points = this.points
+    for (let i = 0; i < points.length; i++) {
+      if (left) {
+        if (points[i][0] < left) {
+          left = points[i][0]
+        }
+      } else {
+        left = points[i][0]
+      }
+      if (right) {
+        if (points[i][0] > right) {
+          right = points[i][0]
+        }
+      } else {
+        right = points[i][0]
+      }
+      if (top) {
+        if (points[i][1] < top) {
+          top = points[i][1]
+        }
+      } else {
+        top = points[i][1]
+      }
+      if (bottom) {
+        if (points[i][1] > bottom) {
+          bottom = points[i][1]
+        }
+      } else {
+        bottom = points[i][1]
+      }
+    }
+    this.borderPoints = [
+      [left, top],
+      [right, top],
+      [right, bottom],
+      [left, bottom]
+    ]
   }
 
   _drawPolygon () {
@@ -150,6 +193,10 @@ class Polygon extends Shape {
 
   _pointsToPath () {
     this.path = 'M' + this.points.map(item => item.join(',')).join('L') + 'Z'
+  }
+
+  getBorderPoint (index) {
+    return this.borderPoints[index]
   }
 }
 

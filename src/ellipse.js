@@ -188,6 +188,13 @@ class Ellipse extends Shape {
       anticlockwise: this.anticlockwise
     })
   }
+
+  getHandlePointCoordinate (handlePointIndex) {
+    if (this.handlePoints[handlePointIndex]) {
+      return this.handlePoints[handlePointIndex].point
+    }
+    return null
+  }
 }
 
 export default Ellipse

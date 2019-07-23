@@ -153,6 +153,13 @@ class Rect extends Shape {
     this.points = JSON.parse(JSON.stringify(this.pointsBackup))
     this.path = this.pathBackup
   }
+
+  getHandlePointCoordinate (handlePointIndex) {
+    if (this.handlePoints[handlePointIndex]) {
+      return this.handlePoints[handlePointIndex].point
+    }
+    return null
+  }
 }
 
 export default Rect
