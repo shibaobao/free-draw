@@ -89,7 +89,7 @@ class Polygon extends Shape {
   _handleMouseMove (event) {
     const { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
-      this.points[this.clickedHandlePointIndex] = [x, y]
+      this.points[this.clickedHandlePointIndex] = this.removePointZoomAndMove([x, y])
     } else if (this.clickedShape) {
       const points = []
       for (let point of this.points) {
