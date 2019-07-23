@@ -87,8 +87,8 @@ class Rect extends Shape {
         this.height += (basePoint[1] - y) / this.freeDraw.zoomLevel
         this.startPoint[1] += (y - basePoint[1]) / this.freeDraw.zoomLevel
       } else if (this.clickedHandlePointIndex === 2) {
-        this.width += x - basePoint[0]
-        this.height += y - basePoint[1]
+        this.width += (x - basePoint[0]) / this.freeDraw.zoomLevel
+        this.height += (y - basePoint[1]) / this.freeDraw.zoomLevel
       } else if (this.clickedHandlePointIndex === 3) {
         this.width += (basePoint[0] - x) / this.freeDraw.zoomLevel
         this.height += (y - basePoint[1]) / this.freeDraw.zoomLevel
@@ -107,7 +107,6 @@ class Rect extends Shape {
         this.freeDraw.eventsCallBack(event, this.id, 'drag')
       }
     }
-    this._generateHandlePointsByPoints()
     this.freeDraw._refreshShapesInCanvas()
   }
 

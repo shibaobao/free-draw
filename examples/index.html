@@ -16,8 +16,9 @@
   <script src="../build/FreeDraw.js"></script>
   <script>
     const freeDraw = new FreeDraw.default({ canvas: document.getElementById('canvas') });
-    freeDraw.zoomAndOffset(1.5, [0, 0], 100, 100)
-    const ellipse = freeDraw.addShape({ id: 'ellipse-1', type: 'ellipse', x: 200, y: 100, radiusX: 100, radiusY: 50 });
+    freeDraw.zoomAndOffset(3.0, [0, 0], 100, 100)
+    const ellipse = freeDraw.addShape({ id: 'ellipse-1', type: 'ellipse', x: 20, y: 20, radiusX: 20, radiusY: 20 });
+    // const ellipse = freeDraw.addShape({ id: 'rect-1', type: 'rect', width: 200, height: 100, startPoint: [100, 100] });
   </script>
 </body>
 </html>

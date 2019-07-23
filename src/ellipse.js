@@ -89,14 +89,13 @@ class Ellipse extends Shape {
         if (this.clickedHandlePointIndex === 3) {
           radiusY = y - basePoint[1]
         }
-        radiusX = this.radiusX + radiusX / 2 * this.freeDraw.zoomLevel
-        radiusY = this.radiusY + radiusY / 2 * this.freeDraw.zoomLevel
+        radiusX = this.radiusX + radiusX / this.freeDraw.zoomLevel
+        radiusY = this.radiusY + radiusY / this.freeDraw.zoomLevel
         if (radiusX > 0 && radiusY > 0) {
           this.radiusX = radiusX
           this.radiusY = radiusY
-        }        
+        }
       }
-
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
@@ -108,7 +107,6 @@ class Ellipse extends Shape {
         this.freeDraw.eventsCallBack(event, this.id, 'drag')
       }
     }
-    this._generateHandlePointsByPoints()
     this.freeDraw._refreshShapesInCanvas()
   }
 
