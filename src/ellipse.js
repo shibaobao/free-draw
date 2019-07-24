@@ -176,17 +176,12 @@ class Ellipse extends Shape {
     this.anticlockwise = this.anticlockwiseBackup
   }
 
-  _pointsToPath () {
-    this.path = JSON.stringify({
-      x: this.x,
-      y: this.y,
-      radiusX: this.radiusX,
-      radiusY: this.radiusY,
-      rotation: this.rotation,
-      startAngle: this.startAngle,
-      endAngle: this.endAngle,
-      anticlockwise: this.anticlockwise
-    })
+  _toSVGPath () {
+    const x = Number(this.x).toFixed(this.freeDraw.fix)
+    const y = Number(this.x).toFixed(this.freeDraw.fix)
+    const radiusX = Number(this.radiusX).toFixed(this.freeDraw.fix)
+    const radiusY = Number(this.radiusY).toFixed(this.freeDraw.fix)
+    this.SVGPath = `<ellipse cx="${x}" cy="${y}" rx="${radiusX}" ry="${radiusY}" />`
   }
 
   getHandlePointCoordinate (handlePointIndex) {

@@ -33,6 +33,8 @@ class FreeDraw {
     // events keys map
     this.eventsKeysMap = {}
 
+    this.fix = 2
+
     this._initFreeDraw()
   }
 

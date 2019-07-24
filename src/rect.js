@@ -129,13 +129,14 @@ class Rect extends Shape {
       startPoint: [x, y]
     }
   }
-
-  _pointsToPath () {
-    this.points[0] = this.startPoint
-    this.points[1] = [this.startPoint[0] + this.width, this.startPoint[1]]
-    this.points[2] = [this.startPoint[0] + this.width, this.startPoint[1] + this.height]
-    this.points[3] = [this.startPoint[0], this.startPoint[1] + this.height]
+  _toSVGPath () {
+    const fix = this.freeDraw.fix
+    this.points[0] = [Number(this.startPoint[0]).toFixed(fix), Number(this.startPoint[1]).toFixed(fix)]
+    this.points[1] = [Number(this.startPoint[0] + this.width).toFixed(fix), Number(this.startPoint[1]).toFixed(fix)]
+    this.points[2] = [Number(this.startPoint[0] + this.width).toFixed(fix), Number(this.startPoint[1] + this.height).toFixed(fix)]
+    this.points[3] = [Number(this.startPoint[0]).toFixed(fix), Number(this.startPoint[1] + this.height).toFixed(fix)]
     this.path = `M${this.points[0].join(',')}L${this.points[1].join(',')}L${this.points[2].join(',')}L${this.points[3].join(',')}Z`
+    this.SVGPath = `<path d="${this.path}" />`
   }
 
   _backupData () {

@@ -191,8 +191,13 @@ class Polygon extends Shape {
     return 'M' + this.getZoomAndMove(true).map(item => item.join(',')).join('L') + 'Z'
   }
 
-  _pointsToPath () {
-    this.path = 'M' + this.points.map(item => item.join(',')).join('L') + 'Z'
+  _toSVGPath () {
+    this.path = 'M' + this.points.map(item => {
+      const x = Number(item[0]).toFixed(this.freeDraw.fix)
+      const y = Number(item[1]).toFixed(this.freeDraw.fix)
+      return x + ',' + y
+    }).join('L') + 'Z'
+    this.SVGPath = `<path d="${this.path}" />`
   }
 
   getBorderPoint (index) {

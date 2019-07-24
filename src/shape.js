@@ -23,6 +23,8 @@ class Shape {
     // Shape path
     this.path = options.path || ''
 
+    this.SVGPath = ''
+
     // Shape handle points
     this.handlePoints = []
 
@@ -244,8 +246,8 @@ class Shape {
     this.edit = false
     this.freeDraw._updateModel('view')
     this.shapeStyle = SHAPE_STYLE
-    if (this._pointsToPath && typeof this._pointsToPath === 'function') {
-      this._pointsToPath()
+    if (this._toSVGPath && typeof this._toSVGPath === 'function') {
+      this._toSVGPath()
     }
     this.freeDraw._refreshShapesInCanvas()
     return this
@@ -255,7 +257,6 @@ class Shape {
    * Cancel Shape editing
    */
   cancelEdit () {
-    // TODO add limit -> can only be called after calling editShape method
     this.shapeStyle = SHAPE_STYLE
     this.edit = false
     this.freeDraw._updateModel('view')
