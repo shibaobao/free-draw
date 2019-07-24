@@ -13,7 +13,6 @@ class Rect extends Shape {
     this.widthBackup = null
     this.heightBackup = null
     this.pointsBackup = []
-    this.pathBackup = ''
 
     this._initRect()
   }
@@ -144,7 +143,6 @@ class Rect extends Shape {
     this.widthBackup = this.width
     this.heightBackup = this.height
     this.pointsBackup = JSON.parse(JSON.stringify(this.points))
-    this.pathBackup = this.path
   }
 
   _rollbackData () {
@@ -152,7 +150,6 @@ class Rect extends Shape {
     this.width = this.widthBackup
     this.height = this.heightBackup
     this.points = JSON.parse(JSON.stringify(this.pointsBackup))
-    this.path = this.pathBackup
   }
 
   getHandlePointCoordinate (handlePointIndex) {
