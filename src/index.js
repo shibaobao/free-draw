@@ -231,7 +231,7 @@ class FreeDraw {
       return this.shapeInCanvas[id]
     }
     if (type === 'ellipse') {
-      this.shapeInCanvas[id] = new Ellipse(Object.assign({}, { freeDraw: this }, options))
+      this.shapeInCanvas[id] = this._addEllipse(options)
       return this.shapeInCanvas[id]
     }
     if (type === 'polygon') {
