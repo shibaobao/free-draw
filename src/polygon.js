@@ -13,6 +13,8 @@ class Polygon extends Shape {
 
     this.pointsBackup = []
     this.borderPoints = []
+
+    this.maxPointCount = options.maxPointCount || 50
     this._initPolygon()
   }
 
@@ -127,9 +129,13 @@ class Polygon extends Shape {
       this.temporaryPoints = []
       this.temporaryPointsWithoutZoomAndOffset = []
     } else {
-      if (this.isCreate) {
-        this.temporaryPointsFollow = true
+      if (this.isCreate && this.points.length < this.maxPointCount) {
         this.points.push(this.removePointZoomAndMove([x, y]))
+        if (this.points.length < this.maxPointCount) {
+          this.temporaryPointsFollow = true
+        } else {
+          this.temporaryPointsFollow = false
+        }
       }
     }
     this.freeDraw._refreshShapesInCanvas()
