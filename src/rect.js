@@ -96,6 +96,7 @@ class Rect extends Shape {
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
+      this.freeDraw._refreshShapesInCanvas()
     } else if (this.clickedShape) {
       this.startPoint = [
         this.startPoint[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel,
@@ -105,8 +106,8 @@ class Rect extends Shape {
       if (this.freeDraw.eventsReceive.includes('drag')) {
         this.freeDraw.eventsCallBack(event, this.id, 'drag')
       }
+      this.freeDraw._refreshShapesInCanvas()
     }
-    this.freeDraw._refreshShapesInCanvas()
   }
 
   getZoomAndMove () {
