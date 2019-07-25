@@ -244,6 +244,7 @@ class Shape {
    */
   finish () {
     this.edit = false
+    this.isCreate = false
     this.freeDraw._updateModel('view')
     this.shapeStyle = SHAPE_STYLE
     if (this._toSVGPath && typeof this._toSVGPath === 'function') {

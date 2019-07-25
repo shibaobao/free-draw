@@ -128,6 +128,7 @@ class Rect extends Shape {
       startPoint: [x, y]
     }
   }
+  
   _toSVGPath () {
     const fix = this.freeDraw.fix
     this.points[0] = [Number(this.startPoint[0]).toFixed(fix), Number(this.startPoint[1]).toFixed(fix)]

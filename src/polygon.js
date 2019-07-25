@@ -9,6 +9,8 @@ class Polygon extends Shape {
 
     this.temporaryPointsFollow = true
 
+    this.isCreate = true
+
     this.pointsBackup = []
     this.borderPoints = []
     this._initPolygon()
@@ -18,6 +20,8 @@ class Polygon extends Shape {
     this.handlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     this._initShape()
     if (this.points.length > 0) {
+      this.isCreate = false
+      this.temporaryPointsFollow = false
       this._draw()
     }
   }
@@ -123,8 +127,10 @@ class Polygon extends Shape {
       this.temporaryPoints = []
       this.temporaryPointsWithoutZoomAndOffset = []
     } else {
-      this.temporaryPointsFollow = true
-      this.points.push(this.removePointZoomAndMove([x, y]))
+      if (this.isCreate) {
+        this.temporaryPointsFollow = true
+        this.points.push(this.removePointZoomAndMove([x, y]))
+      }
     }
     this.freeDraw._refreshShapesInCanvas()
   }
