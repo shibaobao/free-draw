@@ -197,7 +197,7 @@ class Polygon extends Shape {
   }
 
   getPath () {
-    return 'M' + this.getZoomAndMove(true).map(item => item.join(',')).join('L') + 'Z'
+    return 'M' + this.getZoomAndMove(this.edit === true).map(item => item.join(',')).join('L') + 'Z'
   }
 
   _toSVGPath () {
