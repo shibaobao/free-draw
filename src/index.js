@@ -261,6 +261,28 @@ class FreeDraw {
     })
   }
 
+  _addEllipse (options) {
+    let { id, type, shapeStyle, handlePointStyle, x, y, radiusX, radiusY, transform } = options
+    if (transform) {
+      const result = this.removeZoomAndMoveEllipse(x, y, radiusX, radiusY)
+      x = result.x
+      y = result.y
+      radiusX = result.radiusX
+      radiusY = result.radiusY
+    }
+    return new Ellipse({
+      id,
+      type,
+      x,
+      y,
+      radiusX,
+      radiusY,
+      shapeStyle,
+      handlePointStyle,
+      freeDraw: this
+    })
+  }
+
   removeZoomAndMoveRect (width, height, startPoint) {
     width = width / this.zoomLevel
     height = height / this.zoomLevel
@@ -278,6 +300,25 @@ class FreeDraw {
       width,
       height,
       startPoint: [x, y]
+    }
+  }
+
+  removeZoomAndMoveEllipse (x, y, radiusX, radiusY) {
+    radiusX = radiusX / this.zoomLevel
+    radiusY = radiusY / this.zoomLevel
+    if (this.offsetLeft !== 0) {
+      x -= this.offsetLeft
+    }
+    if (this.offsetTop !== 0) {
+      y -= this.offsetTop
+    }
+    x = ((x - this.transformCenter[0]) / this.zoomLevel) + this.transformCenter[0]
+    y = ((y - this.transformCenter[1]) / this.zoomLevel) + this.transformCenter[1]
+    return {
+      x,
+      y,
+      radiusX,
+      radiusY
     }
   }
 }
