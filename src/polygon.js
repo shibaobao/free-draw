@@ -149,6 +149,9 @@ class Polygon extends Shape {
       }
       this.clickedShapePoint = [x, y]
       this.points = points
+      if (this.freeDraw.eventsReceive.includes('drag')) {
+        this.freeDraw.eventsCallBack(event, this.id, 'drag')
+      }
     } else {
       if (this.temporaryPointsFollow) {
         this.temporaryPoints = [this.removePointZoomAndMove([x, y])]
