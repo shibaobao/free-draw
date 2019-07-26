@@ -28,6 +28,9 @@ class Shape {
     // Shape handle points
     this.handlePoints = []
 
+    // Shape rotation handle point
+    this.rotationHandlePoint = []
+
     // Record index if handlepoint clicked
     this.clickedHandlePointIndex = null
 
@@ -93,6 +96,16 @@ class Shape {
         }
         break
     }
+  }
+
+  // NEWLY ADDED
+  _drawRotationHandlePoint (x, y, radius, style) {
+    const handlePoint = new Path2D()
+    handlePoint.arc(x, y, radius, 0, Math.PI * 2, false)
+    this.freeDraw._updateCtxStyle(style)
+    this.freeDraw.ctx.fill(handlePoint)
+    this.freeDraw.ctx.stroke(handlePoint)
+    return handlePoint
   }
 
   /**

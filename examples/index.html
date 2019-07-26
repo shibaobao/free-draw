@@ -1,29 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Free Draw with canvas</title>
-  <style>
-    .canvas-wrap {
-      border: 2px solid;
-    }
-  </style>
-</head>
-<body>
-  <canvas class="canvas-wrap" id="canvas" width="800" height="600"></canvas>
-  <script src="../build/FreeDraw.js"></script>
-  <script>
-    const freeDraw = new FreeDraw.default({ canvas: document.getElementById('canvas') });
-    freeDraw.zoomAndOffset(3.0, [0, 0], 100, 100)
-    // const ellipse = freeDraw.addShape({ id: 'ellipse-1', type: 'ellipse', x: 20, y: 20, radiusX: 20, radiusY: 20 });
-    // const ellipse = freeDraw.addShape({ id: 'rect-1', type: 'rect', width: 200, height: 100, startPoint: [100, 100] });
-    const ellipse = freeDraw.addShape({ id: 'polygon-1', type: 'polygon' });
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Free Draw with canvas</title>
+    <style>
+      * {
+        font-family: sans-serif;
+      }
+      .canvas-wrap {
+        border: 2px solid;
+      }
+      .options {
+        display: inline-block;
+        padding: 20px 50px;
+        border: 2px solid #2980b9;
+        color: white;
+        background-color: #3498db;
+      }
+      .delete {
+        border: 2px solid #c0392b;
+        background-color: #e74c3c;        
+      }
+      .options:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="canvas-wrap" id="canvas" width="800" height="600"></canvas>
+    <div class="options-panel">
+      <div class="options" data-name="ellipse">Ellipse</div>
+      <div class="options" data-name="rect">Rectangle</div>
+      <div class="options" data-name="polygon">Polygon</div>
+      <div class="options delete" data-name="delete">Delete All</div>
+    </div>
+    <script src="../build/FreeDraw.js"></script>
+    <script>
+      const freeDraw = new FreeDraw.default({
+        canvas: document.getElementById('canvas')
+      });
+      freeDraw.zoomAndOffset(3.0, [0, 0], 100, 100);
 
-    window.setTimeout(() => {
-      console.log(ellipse.finish())
-    }, 5000)
-  </script>
-</body>
+      let options = document.querySelectorAll('.options');
+      options.forEach(option => {
+        option.addEventListener('click', event => {
+          const { name } = event.target.dataset;
+          try {
+            switch (name) {
+              case 'ellipse':
+                freeDraw.addShape({
+                  id: `${name}-${Math.random()}`,
+                  type: `${name}`,
+                  x: 20,
+                  y: 20,
+                  radiusX: 20,
+                  radiusY: 20
+                });
+                break;
+              case 'rect':
+                freeDraw.addShape({
+                  id: `${name}-${Math.random()}`,
+                  type: `${name}`,
+                  width: 200,
+                  height: 100,
+                  startPoint: [100, 100]
+                });
+                break;
+              case 'polygon':
+                freeDraw.addShape({
+                  id: 'polygon-1',
+                  type: 'polygon',
+                });
+                break;
+              case 'delete':
+                freeDraw.removeAllShape();
+                break;
+              default:
+            }
+          } catch (error) {
+            alert(error.message);
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

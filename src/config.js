@@ -1,6 +1,7 @@
 const lineColor = '#0E71EB'
 const shapeFillColor = 'rgba(14, 113, 235, 0.25)'
 const handlePointFillColor = '#FFFFFF'
+const handleCircleFillColor = '#27AE60'
 const lineWidth = 2
 const handlePointWidth = 8
 const handlePointRadio = 4
@@ -14,8 +15,7 @@ export const HANDLE_POINT_STYLE = {
 
 export const HANDLE_POINT_CIRCLE_STYLE = {
   lineWidth,
-  fillStyle: handlePointFillColor,
-  strokeStyle: lineColor,
+  fillStyle: handleCircleFillColor,
   radius: handlePointRadio
 }
 
