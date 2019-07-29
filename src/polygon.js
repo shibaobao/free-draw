@@ -208,8 +208,8 @@ class Polygon extends Shape {
 
   _toSVGPath () {
     this.path = 'M' + this.points.map(item => {
-      const x = Number(item[0]).toFixed(this.freeDraw.fix)
-      const y = Number(item[1]).toFixed(this.freeDraw.fix)
+      const x = Number(item[0].toFixed(this.freeDraw.fix))
+      const y = Number(item[1].toFixed(this.freeDraw.fix))
       return x + ',' + y
     }).join('L') + 'Z'
     this.SVGPath = `<path d="${this.path}" />`
