@@ -25,6 +25,7 @@ class Polygon extends Shape {
       this.isCreate = false
       this.temporaryPointsFollow = false
       this._draw()
+      this._backupData()
     }
   }
 

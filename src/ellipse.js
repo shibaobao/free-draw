@@ -33,6 +33,7 @@ class Ellipse extends Shape {
     this._initShape()
     if (this.x && this.y && this.radiusX && this.radiusY) {
       this._draw()
+      this._backupData()
     }
   }
 

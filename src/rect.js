@@ -21,6 +21,7 @@ class Rect extends Shape {
     this._initShape()
     if (this.startPoint.length > 0 && this.width && this.height) {
       this._draw()
+      this._backupData()
     }
   }
 
