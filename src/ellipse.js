@@ -10,7 +10,6 @@ class Ellipse extends Shape {
     this.y = options.y
     this.radiusX = options.radiusX
     this.radiusY = options.radiusY
-    this.rotation = options.rotation || 0
     this.startAngle = options.startAngle || 0
     this.endAngle = options.endAngle || 2 * Math.PI
     this.anticlockwise = options.anticlockwise || false
@@ -19,12 +18,13 @@ class Ellipse extends Shape {
     this.yBackup = null
     this.radiusXBackup = null
     this.radiusYBackup = null
-    this.rotationBackup = null
+    this.rotateAngleBackup = null
     this.startAngleBackup = null
     this.endAngleBackup = null
     this.anticlockwiseBackup = null
 
     this.handleLines = []
+    this.rotationHandleLine = null
 
     this._initEllipse()
   }
@@ -52,13 +52,44 @@ class Ellipse extends Shape {
     this.handleLines[3] = { obj: null, startPoint: [x - radiusX, y + radiusY], endPoint: [x - radiusX, y - radiusY] }
   }
 
+  _generateRotationHandlePointsAndLine () {
+    const center = [
+      (this.handlePoints[0].point[0] + this.handlePoints[2].point[0]) / 2,
+      (this.handlePoints[0].point[1] + this.handlePoints[2].point[1]) / 2,
+    ]
+    const shapeHeight = this._distance(
+      this.handlePoints[0].point[0],
+      this.handlePoints[0].point[1],
+      this.handlePoints[3].point[0],
+      this.handlePoints[3].point[1],
+    )
+    this.rotationHandlePoint = {
+      obj: null,
+      point: [
+        center[0] - (shapeHeight / 2 + 20) * Math.cos(this._toArc(this.rotateAngle)),
+        center[1] - (shapeHeight / 2 + 20) * Math.sin(this._toArc (this.rotateAngle)),
+      ],
+    }
+    this.rotationHandleLine = {
+      obj: null,
+      startPoint: center,
+      endPoint: [
+        center[0] - (shapeHeight / 2 + 20) * Math.cos(this._toArc(this.rotateAngle)),
+        center[1] - (shapeHeight / 2 + 20) * Math.sin(this._toArc (this.rotateAngle)),
+      ],
+    }
+  }
+
   _draw () {
     this.shape = this._drawEllipse()
     this._generateHandleLinesByPoints()
     this._generateHandlePointsByPoints()
+    this._generateRotationHandlePointsAndLine()
     if (this.edit) {
       this._drawEllipseHandleLines()
       this._drawEllipseHandlePoints()
+      this._drawEllipseRotationHandleLine()
+      this._drawEllipseRotationHandlePoint()
     }
   }
 
@@ -77,23 +108,45 @@ class Ellipse extends Shape {
     if (this.clickedHandlePoint) {
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       if ([0, 1, 2, 3].includes(this.clickedHandlePointIndex)) {
-        let radiusX = basePoint[0] - x
-        let radiusY = basePoint[1] - y
+        let radiusX, radiusY, centerX, centerY
+
+        if (this.clickedHandlePointIndex === 0) {
+          radiusX = basePoint[0] - x
+          radiusY = basePoint[1] - y
+          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          centerX = this.x - (radiusX - this.radiusX)
+          centerY = this.y - (radiusY - this.radiusY)
+        }
         if (this.clickedHandlePointIndex === 1) {
           radiusX = x - basePoint[0]
+          radiusY = basePoint[1] - y
+          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          centerX = this.x + (radiusX - this.radiusX)
+          centerY = this.y - (radiusY - this.radiusY)
         }
         if (this.clickedHandlePointIndex === 2) {
           radiusX = x - basePoint[0]
           radiusY = y - basePoint[1]
+          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          centerX = this.x + (radiusX - this.radiusX)
+          centerY = this.y + (radiusY - this.radiusY)
         }
         if (this.clickedHandlePointIndex === 3) {
+          radiusX = basePoint[0] - x
           radiusY = y - basePoint[1]
+          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          centerX = this.x - (radiusX - this.radiusX)
+          centerY = this.y + (radiusY - this.radiusY)
         }
-        radiusX = this.radiusX + radiusX / this.freeDraw.zoomLevel
-        radiusY = this.radiusY + radiusY / this.freeDraw.zoomLevel
         if (radiusX > 0 && radiusY > 0) {
           this.radiusX = radiusX
           this.radiusY = radiusY
+          this.x = centerX;
+          this.y = centerY;
         }
       }
       if (this.freeDraw.eventsReceive.includes('transform')) {
@@ -125,10 +178,28 @@ class Ellipse extends Shape {
     }
   }
 
+  _drawEllipseRotationHandlePoint() {
+    this.rotationHandlePoint.obj = this._drawCirclePoint(
+      this.rotationHandlePoint.point[0],
+      this.rotationHandlePoint.point[1],      
+      this.rotationHandlePointStyle.radius,
+      {
+        fillStyle: this.rotationHandlePointStyle.fillStyle,
+      }
+    )
+  }
+
   _drawEllipseHandleLines () {
     for (let i = 0; i < this.handleLines.length; i++) {
       this.handleLines[i].obj = this._drawLine(this.handleLines[i].startPoint, this.handleLines[i].endPoint, HANDLE_LINE_STYLE)
     }
+  }
+
+  _drawEllipseRotationHandleLine() {
+    this.rotationHandleLine.obj = this._drawLine(
+      this.rotationHandleLine.startPoint, this.rotationHandleLine.endPoint, 
+      HANDLE_LINE_STYLE
+    )
   }
 
   getZoomAndMove () {
@@ -147,7 +218,7 @@ class Ellipse extends Shape {
       y,
       radiusX,
       radiusY,
-      rotation: this.rotation,
+      rotateAngle: this.rotateAngle,
       startAngle: this.startAngle,
       endAngle: this.endAngle,
       anticlockwise: this.anticlockwise
@@ -159,7 +230,7 @@ class Ellipse extends Shape {
     this.yBackup = this.y
     this.radiusXBackup = this.radiusX
     this.radiusYBackup = this.radiusY
-    this.rotationBackup = this.rotation
+    this.rotateAngleBackup = this.rotateAngle
     this.startAngleBackup = this.startAngle
     this.endAngleBackup = this.endAngle
     this.anticlockwiseBackup = this.anticlockwise
@@ -170,7 +241,7 @@ class Ellipse extends Shape {
     this.y = this.yBackup
     this.radiusX = this.radiusXBackup
     this.radiusY = this.radiusYBackup
-    this.rotation = this.rotationBackup
+    this.rotateAngle = this.rotateAngleBackup
     this.startAngle = this.startAngleBackup
     this.endAngle = this.endAngleBackup
     this.anticlockwise = this.anticlockwiseBackup

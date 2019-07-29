@@ -1,7 +1,7 @@
 const lineColor = '#0E71EB'
 const shapeFillColor = 'rgba(14, 113, 235, 0.25)'
 const handlePointFillColor = '#FFFFFF'
-const handleCircleFillColor = '#27AE60'
+const handleCircleFillColor = '#2ECC71'
 const lineWidth = 2
 const handlePointWidth = 8
 const handlePointRadio = 4
