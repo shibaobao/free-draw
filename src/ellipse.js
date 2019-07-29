@@ -6,10 +6,10 @@ class Ellipse extends Shape {
   constructor (options) {
     super(options)
 
-    this.x = options.x
-    this.y = options.y
-    this.radiusX = options.radiusX
-    this.radiusY = options.radiusY
+    this.x = Number(options.x.toFixed(this.freeDraw.fix))
+    this.y = Number(options.y.toFixed(this.freeDraw.fix))
+    this.radiusX = Number(options.radiusX.toFixed(this.freeDraw.fix))
+    this.radiusY = Number(options.radiusY.toFixed(this.freeDraw.fix))
     this.rotation = options.rotation || 0
     this.startAngle = options.startAngle || 0
     this.endAngle = options.endAngle || 2 * Math.PI
@@ -92,17 +92,17 @@ class Ellipse extends Shape {
         radiusX = this.radiusX + radiusX / this.freeDraw.zoomLevel
         radiusY = this.radiusY + radiusY / this.freeDraw.zoomLevel
         if (radiusX > 0 && radiusY > 0) {
-          this.radiusX = radiusX
-          this.radiusY = radiusY
+          this.radiusX = Number(radiusX.toFixed(this.freeDraw.fix))
+          this.radiusY = Number(radiusY.toFixed(this.freeDraw.fix))
         }
       }
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
     } else if (this.clickedShape) {
-      this.x += (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel
-      this.y += (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel
-      this.clickedShapePoint = [x, y]
+      this.x = Number((this.x + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+      this.y = Number((this.y + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+      this.clickedShapePoint = [Number(x.toFixed(this.freeDraw.fix)), Number(y.toFixed(this.freeDraw.fix))]
       if (this.freeDraw.eventsReceive.includes('drag')) {
         this.freeDraw.eventsCallBack(event, this.id, 'drag')
       }
@@ -132,8 +132,8 @@ class Ellipse extends Shape {
   }
 
   getZoomAndMove () {
-    let radiusX = this.radiusX * this.freeDraw.zoomLevel
-    let radiusY = this.radiusY * this.freeDraw.zoomLevel
+    let radiusX = Number((this.radiusX * this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+    let radiusY = Number((this.radiusY * this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
     let x = (this.x - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
     let y = (this.y - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
     if (this.freeDraw.offsetLeft !== 0) {
@@ -143,8 +143,8 @@ class Ellipse extends Shape {
       y += this.freeDraw.offsetTop
     }
     return {
-      x,
-      y,
+      x: Number(x.toFixed(this.freeDraw.fix)),
+      y: Number(y.toFixed(this.freeDraw.fix)),
       radiusX,
       radiusY,
       rotation: this.rotation,
@@ -177,11 +177,20 @@ class Ellipse extends Shape {
   }
 
   _toSVGPath () {
-    const x = Number(this.x).toFixed(this.freeDraw.fix)
-    const y = Number(this.x).toFixed(this.freeDraw.fix)
-    const radiusX = Number(this.radiusX).toFixed(this.freeDraw.fix)
-    const radiusY = Number(this.radiusY).toFixed(this.freeDraw.fix)
+    const x = Number(this.x.toFixed(this.freeDraw.fix))
+    const y = Number(this.x.toFixed(this.freeDraw.fix))
+    const radiusX = Number(this.radiusX.toFixed(this.freeDraw.fix))
+    const radiusY = Number(this.radiusY.toFixed(this.freeDraw.fix))
     this.SVGPath = `<ellipse cx="${x}" cy="${y}" rx="${radiusX}" ry="${radiusY}" />`
+  }
+
+  _toJSONString () {
+    this.JSONString = JSON.stringify({
+      x: Number(this.x.toFixed(this.freeDraw.fix)),
+      y: Number(this.x.toFixed(this.freeDraw.fix)),
+      radiusX: Number(this.radiusX.toFixed(this.freeDraw.fix)),
+      radiusY: Number(this.radiusY.toFixed(this.freeDraw.fix))
+    })
   }
 
   getHandlePointCoordinate (handlePointIndex) {

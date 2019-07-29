@@ -149,8 +149,8 @@ class Polygon extends Shape {
       const points = []
       for (let point of this.points) {
         points.push([
-          point[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel,
-          point[1] + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel
+          Number((point[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)),
+          Number((point[1] + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
         ])
       }
       this.clickedShapePoint = [x, y]
@@ -174,13 +174,13 @@ class Polygon extends Shape {
       allPoints = allPoints.concat(this.temporaryPoints)
     }
     for (let i = 0; i < allPoints.length; i++) {
-      let x = (allPoints[i][0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]
-      let y = (allPoints[i][1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]
+      let x = Number(((allPoints[i][0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]).toFixed(this.freeDraw.fix))
+      let y = Number(((allPoints[i][1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]).toFixed(this.freeDraw.fix))
       if (this.freeDraw.offsetLeft !== 0) {
-        x += this.freeDraw.offsetLeft
+        x = Number((x + this.freeDraw.offsetLeft).toFixed(this.freeDraw.fix))
       }
       if (this.freeDraw.offsetTop !== 0) {
-        y += this.freeDraw.offsetTop
+        y = Number((y + this.freeDraw.offsetTop).toFixed(this.freeDraw.fix))
       }
       points.push([x, y])
     }
@@ -189,8 +189,8 @@ class Polygon extends Shape {
 
   removePointZoomAndMove ([x, y]) {
     return [
-      ((x - this.freeDraw.transformCenter[0] - this.freeDraw.offsetLeft) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[0],
-      ((y - this.freeDraw.transformCenter[1] - this.freeDraw.offsetTop) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[1]
+      Number((((x - this.freeDraw.transformCenter[0] - this.freeDraw.offsetLeft) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[0]).toFixed(this.freeDraw.fix)),
+      Number((((y - this.freeDraw.transformCenter[1] - this.freeDraw.offsetTop) / this.freeDraw.zoomLevel) + this.freeDraw.transformCenter[1]).toFixed(this.freeDraw.fix))
     ]
   }
 

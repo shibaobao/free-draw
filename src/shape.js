@@ -250,6 +250,9 @@ class Shape {
     if (this._toSVGPath && typeof this._toSVGPath === 'function') {
       this._toSVGPath()
     }
+    if (this._toJSONString && typeof this._toJSONString === 'function') {
+      this._toJSONString()
+    }
     this.freeDraw._refreshShapesInCanvas()
     return this
   }
