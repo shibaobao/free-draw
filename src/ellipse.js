@@ -188,7 +188,7 @@ class Ellipse extends Shape {
   _toJSONString () {
     this.JSONString = JSON.stringify({
       x: Number(this.x.toFixed(this.freeDraw.fix)),
-      y: Number(this.x.toFixed(this.freeDraw.fix)),
+      y: Number(this.y.toFixed(this.freeDraw.fix)),
       radiusX: Number(this.radiusX.toFixed(this.freeDraw.fix)),
       radiusY: Number(this.radiusY.toFixed(this.freeDraw.fix))
     })
