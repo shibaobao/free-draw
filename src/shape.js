@@ -1,5 +1,6 @@
 import {
   HANDLE_POINT_STYLE,
+  HANDLE_POINT_CIRCLE_STYLE,
   EDIT_SHAPE_STYLE,
   SHAPE_STYLE
 } from './config'
@@ -20,6 +21,9 @@ class Shape {
     this.temporaryPoints = []
     this.temporaryPointsWithoutZoomAndOffset = []
 
+    // Rotate Angle
+    this.rotateAngle = options.rotateAngle || 90
+
     // Shape path
     this.path = options.path || ''
 
@@ -27,6 +31,9 @@ class Shape {
 
     // Shape handle points
     this.handlePoints = []
+
+    // Shape rotation handle point
+    this.rotationHandlePoint = {}
 
     // Record index if handlepoint clicked
     this.clickedHandlePointIndex = null
@@ -40,7 +47,8 @@ class Shape {
 
     // Handle points style
     this.handlePointStyle = options.handlePointStyle
-
+    this.rotationHandlePointStyle = options.rotationHandlePointStyle
+   
     // Shape style
     this.shapeStyle = options.shapeStyle
 
@@ -57,6 +65,9 @@ class Shape {
     // Set default style for shaape
     if (!this.handlePointStyle) {
       this.handlePointStyle = HANDLE_POINT_STYLE
+    }
+    if (!this.rotationHandlePointStyle) {
+      this.rotationHandlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     }
     if (!this.shapeStyle) {
       this.shapeStyle = EDIT_SHAPE_STYLE
@@ -149,6 +160,14 @@ class Shape {
 
   _includes (x, y) {
     return this._pointInHandlePoints(x, y) || this._pointInShape(x, y)
+  }
+
+  _distance (x1, y1, x2, y2) {
+    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+  }
+
+  _toArc (angle) {
+    return (angle / 360) * Math.PI * 2
   }
 
   _handleMouseDown (event) {

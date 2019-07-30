@@ -64,7 +64,7 @@ class FreeDraw {
     if (this.model === 'view') {
       // ignore keydown event when in view model
       if (type === 'keydown') {
-        return
+        return;
       }
       // Only check if user clicked shape
       if (type === 'mousedown') {
@@ -116,6 +116,22 @@ class FreeDraw {
         } else if (type === 'mouseup') {
           this.isClickedShape = false
           this.clickedShapeId = null
+        } else if (type === 'keydown') {
+          let targetShapeKey = null;
+          for (let shapeKey in this.shapeInCanvas) {
+            if (this.shapeInCanvas[shapeKey].edit) {
+              targetShapeKey = shapeKey;
+            }
+          }
+          switch(event.keyCode) {
+            case 13:
+              this.shapeInCanvas[targetShapeKey].finish();
+              break;
+            case 8:
+              this.removeShape(targetShapeKey);
+              break;
+            default:
+          }
         }
       }
     }
@@ -167,6 +183,7 @@ class FreeDraw {
   removeAllShape () {
     this.shapeInCanvas = {}
     this._refreshShapesInCanvas()
+    this._updateModel('view')
     return this
   }
 
