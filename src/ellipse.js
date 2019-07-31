@@ -108,13 +108,18 @@ class Ellipse extends Shape {
   _handleMouseMove (event) {
     let { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
+      if (!this.lastMousePos.x || !this.lastMousePos.y) {
+        this.lastMousePos = {x, y}
+      }
+      const ratio = this.radiusY / this.radiusX
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       if ([0, 1, 2, 3].includes(this.clickedHandlePointIndex)) {
         let radiusX, radiusY, centerX, centerY
 
         if (this.clickedHandlePointIndex === 0) {
           radiusX = basePoint[0] - x
-          radiusY = basePoint[1] - y
+          radiusY = ratio * radiusX
+          // radiusY = basePoint[1] - y
           radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
           radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
           centerX = this.x - (radiusX - this.radiusX)
@@ -122,7 +127,8 @@ class Ellipse extends Shape {
         }
         if (this.clickedHandlePointIndex === 1) {
           radiusX = x - basePoint[0]
-          radiusY = basePoint[1] - y
+          radiusY = ratio * radiusX
+          // radiusY = basePoint[1] - y
           radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
           radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
           centerX = this.x + (radiusX - this.radiusX)
@@ -130,15 +136,18 @@ class Ellipse extends Shape {
         }
         if (this.clickedHandlePointIndex === 2) {
           radiusX = x - basePoint[0]
-          radiusY = y - basePoint[1]
+          radiusY = ratio * radiusX
+          // radiusY = y - basePoint[1]
           radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
           radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
           centerX = this.x + (radiusX - this.radiusX)
           centerY = this.y + (radiusY - this.radiusY)
+
         }
         if (this.clickedHandlePointIndex === 3) {
           radiusX = basePoint[0] - x
-          radiusY = y - basePoint[1]
+          radiusY = ratio * radiusX
+          // radiusY = y - basePoint[1]
           radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
           radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
           centerX = this.x - (radiusX - this.radiusX)
@@ -151,6 +160,7 @@ class Ellipse extends Shape {
           this.y = centerY;
         }
       }
+      this.lastMousePos = {x, y}
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
@@ -162,6 +172,7 @@ class Ellipse extends Shape {
         this.freeDraw.eventsCallBack(event, this.id, 'drag')
       }
     }
+    this.lastMousePos = {x, y}
     this.freeDraw._refreshShapesInCanvas()
   }
 
