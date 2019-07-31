@@ -54,6 +54,9 @@ class Shape {
 
     // Shape Object, Path/Rect
     this.shape = null
+
+    // Last mouse position
+    this.lastMousePos = {}
   }
 
   /**

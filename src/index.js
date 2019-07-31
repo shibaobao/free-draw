@@ -33,7 +33,11 @@ class FreeDraw {
     // events keys map
     this.eventsKeysMap = {}
 
+    // Precision
     this.fix = 2
+
+    // Last mouse position
+    this.lastMousePos = {}
 
     this._initFreeDraw()
   }
