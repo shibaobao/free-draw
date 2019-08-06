@@ -96,7 +96,10 @@ class Polygon extends Shape {
     const path = this.getPath()
     const newPath = new Path2D(path)
     this.freeDraw._updateCtxStyle(this.shapeStyle)
-    this.freeDraw.ctx.fill(newPath)
+    console.log(this.temporaryPointsFollow)
+    if (!this.temporaryPointsFollow) {
+      this.freeDraw.ctx.fill(newPath)
+    }
     this.freeDraw.ctx.stroke(newPath)
     return newPath
   }
@@ -204,7 +207,11 @@ class Polygon extends Shape {
   }
 
   getPath () {
-    return 'M' + this.getZoomAndMove(this.edit === true).map(item => item.join(',')).join('L') + 'Z'
+    let path = 'M' + this.getZoomAndMove(this.edit === true).map(item => item.join(',')).join('L')
+    if (!this.temporaryPointsFollow) {
+      path += 'Z'
+    }
+    return path
   }
 
   _toSVGPath () {
