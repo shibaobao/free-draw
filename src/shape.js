@@ -46,6 +46,8 @@ class Shape {
 
     // Shape Object, Path/Rect
     this.shape = null
+
+    this.clickTime = null
   }
 
   /**
@@ -164,9 +166,6 @@ class Shape {
       this.clickedHandlePoint = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
-      // if (this.type === 'polygon') {
-      //   this._polygonMouseDown(event)
-      // }
     } else if (this.type === 'polygon') {
       this._polygonMouseDown(event)
     }

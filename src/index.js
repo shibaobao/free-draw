@@ -73,6 +73,19 @@ class FreeDraw {
           if (shapeObj._includes(x, y)) {
             this.clickedShapeId = shapeKey
             this.isClickedShape = true
+            if (shapeObj.clickTimer === null) {
+              shapeObj.clickTime = new Date().getTime()
+            } else {
+              const maxInterval = 500
+              const currentClickTime = new Date().getTime()
+              if (currentClickTime - shapeObj.clickTime <= maxInterval) {
+                if (this.eventsReceive.includes('doubleclick')) {
+                  this.eventsCallBack(event, shapeObj.id, 'doubleclick')
+                }
+              } else {
+                shapeObj.clickTime = new Date().getTime()
+              }
+            }
           }
         }
       } else if (type === 'mouseup') {

@@ -15,7 +15,13 @@
   <canvas class="canvas-wrap" id="canvas" width="800" height="600"></canvas>
   <script src="../build/FreeDraw.js"></script>
   <script>
-    const freeDraw = new FreeDraw.default({ canvas: document.getElementById('canvas') });
+    const freeDraw = new FreeDraw.default({
+      canvas: document.getElementById('canvas'),
+      eventsReceive: ['mouseenter', 'mouseleave', 'drag', 'doubleclick'],
+      eventsCallBack: (event, key, eventType) => {
+        console.log(event, key, eventType)
+      }
+    });
     freeDraw.zoomAndOffset(3.0, [0, 0], 100, 100)
     // const ellipse = freeDraw.addShape({ id: 'ellipse-1', type: 'ellipse', x: 20.213123, y: 20.123123, radiusX: 20.123, radiusY: 20.124124 });
     // const ellipse = freeDraw.addShape({ id: 'rect-1', type: 'rect', width: 200, height: 100, startPoint: [100, 100] });
