@@ -215,10 +215,10 @@ class FreeDraw {
     if (zoomLevel) {
       this.zoomLevel = zoomLevel
     }
-    if (offsetTop) {
+    if (offsetTop !== undefined) {
       this.offsetTop = offsetTop
     }
-    if (offsetLeft) {
+    if (offsetLeft !== undefined) {
       this.offsetLeft = offsetLeft
     }
     if (transformCenter) {
