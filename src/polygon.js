@@ -137,6 +137,7 @@ class Polygon extends Shape {
     } else {
       if (this.isCreate && this.points.length < this.maxPointCount) {
         this.points.push(this.removePointZoomAndMove([x, y]))
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseEnterHandlePoint')
         if (this.points.length < this.maxPointCount) {
           this.temporaryPointsFollow = true
         } else {
