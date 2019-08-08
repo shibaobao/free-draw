@@ -15,6 +15,8 @@ class Polygon extends Shape {
     this.borderPoints = []
 
     this.maxPointCount = options.maxPointCount || 50
+
+    this.mouseInHandlePoint = false
     this._initPolygon()
   }
 
@@ -169,6 +171,17 @@ class Polygon extends Shape {
       }
     }
     this.freeDraw._refreshShapesInCanvas()
+    if (this._pointInHandlePoints(x, y)) {
+      if (!this.mouseInHandlePoint) {
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseEnterHandlePoint')
+        this.mouseInHandlePoint = true
+      }
+    } else {
+      if (this.mouseInHandlePoint) {
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseLeaveHandlePoint')
+      }
+      this.mouseInHandlePoint = false
+    }
   }
 
   getZoomAndMove (withTemporaryPoints) {
