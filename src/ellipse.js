@@ -179,7 +179,7 @@ class Ellipse extends Shape {
 
   _toSVGPath () {
     const x = Number(this.x.toFixed(this.freeDraw.fix))
-    const y = Number(this.x.toFixed(this.freeDraw.fix))
+    const y = Number(this.y.toFixed(this.freeDraw.fix))
     const radiusX = Number(this.radiusX.toFixed(this.freeDraw.fix))
     const radiusY = Number(this.radiusY.toFixed(this.freeDraw.fix))
     this.SVGPath = `<ellipse cx="${x}" cy="${y}" rx="${radiusX}" ry="${radiusY}" />`

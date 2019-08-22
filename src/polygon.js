@@ -15,6 +15,8 @@ class Polygon extends Shape {
     this.borderPoints = []
 
     this.maxPointCount = options.maxPointCount || 50
+
+    this.mouseInHandlePoint = false
     this._initPolygon()
   }
 
@@ -135,6 +137,7 @@ class Polygon extends Shape {
     } else {
       if (this.isCreate && this.points.length < this.maxPointCount) {
         this.points.push(this.removePointZoomAndMove([x, y]))
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseEnterHandlePoint')
         if (this.points.length < this.maxPointCount) {
           this.temporaryPointsFollow = true
         } else {
@@ -169,6 +172,17 @@ class Polygon extends Shape {
       }
     }
     this.freeDraw._refreshShapesInCanvas()
+    if (this._pointInHandlePoints(x, y)) {
+      if (!this.mouseInHandlePoint) {
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseEnterHandlePoint')
+        this.mouseInHandlePoint = true
+      }
+    } else {
+      if (this.mouseInHandlePoint) {
+        this.freeDraw.eventsCallBack(event, this.id, 'mouseLeaveHandlePoint')
+      }
+      this.mouseInHandlePoint = false
+    }
   }
 
   getZoomAndMove (withTemporaryPoints) {
