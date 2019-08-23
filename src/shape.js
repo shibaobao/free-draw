@@ -42,6 +42,9 @@ class Shape {
     this.clickedShapePoint = []
     this.clickedHandlePoint = false
 
+    // Record index if handleLine clicked
+    this.clickedHandleLineIndex = null
+
     // FreeDraw instance reference
     this.freeDraw = options.freeDraw
 
@@ -57,6 +60,9 @@ class Shape {
     this.shape = null
 
     this.clickTime = null
+
+    // Transform mode: free / ratio
+    this.transformMode = 'free'
   }
 
   /**
@@ -139,6 +145,7 @@ class Shape {
     this.freeDraw._updateCtxStyle(style)
     this.freeDraw.ctx.fill(newPath)
     this.freeDraw.ctx.stroke(newPath)
+    this.freeDraw.ctx.closePath()
     return newPath
   }
 
@@ -178,13 +185,20 @@ class Shape {
     const { offsetX: x, offsetY: y } = event
     if (this._pointInHandlePoints(x, y)) {
       this.clickedHandlePoint = true
+      this.clickedHandleLine = false
       this.clickedShapePoint = []
       this.clickedShape = false
       if (this.type === 'polygon') {
         this._polygonMouseDown(event)
       }
+    } else if (this.type === 'ellipse' && this._pointInHandleLines(x, y)) {
+      this.clickedHandleLine = true
+      this.clickedHandlePoint = false
+      this.clickedShapePoint = []
+      this.clickedShape = false
     } else if (this._pointInShape(x, y)) {
       this.clickedHandlePoint = false
+      this.clickedHandleLine = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
     } else if (this.type === 'polygon') {
@@ -195,6 +209,7 @@ class Shape {
   _handleMouseUp () {
     this.clickedShape = false
     this.clickedHandlePoint = false
+    this.clickedHandleLine = false
     this.clickedShapePoint = []
   }
 
@@ -239,6 +254,31 @@ class Shape {
       this.clickedHandlePointIndex = clickedHandlePointIndex
     }
     return result
+  }
+
+  /**
+   * Point(x, y) is in handleLines
+   *
+   * @param {*} x
+   * @param {*} y
+   * @returns {Boolean}
+   * @memberof Shape
+   */
+  _pointInHandleLines (x, y) {
+    let result = false
+    if (this.edit) {
+      let clickedHandleLineIndex = null
+      for (let i = 0; i < this.handleLines.length; i++) {
+        if (this.freeDraw.ctx.isPointInPath(this.handleLines[i].obj, x, y)) {
+          result = true
+          clickedHandleLineIndex = i
+          break
+        }
+      }
+      this.clickedHandleLineIndex = clickedHandleLineIndex
+    }
+    console.log(result)
+    return result;
   }
 
   /**

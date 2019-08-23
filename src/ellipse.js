@@ -109,17 +109,109 @@ class Ellipse extends Shape {
   _handleMouseMove (event) {
     let { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
-      const ratio = this.radiusY / this.radiusX
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       if ([0, 1, 2, 3].includes(this.clickedHandlePointIndex)) {
         let radiusX, radiusY, centerX, centerY
-
+        if (this.transformMode === 'ratio') {
+          const ratio = this.radiusY / this.radiusX
+          if (this.clickedHandlePointIndex === 0) {
+            radiusX = basePoint[0] - x
+            radiusY = ratio * radiusX
+            // radiusY = basePoint[1] - y
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x - (radiusX - this.radiusX)
+            centerY = this.y - (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 1) {
+            radiusX = x - basePoint[0]
+            radiusY = ratio * radiusX
+            // radiusY = basePoint[1] - y
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x + (radiusX - this.radiusX)
+            centerY = this.y - (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 2) {
+            radiusX = x - basePoint[0]
+            radiusY = ratio * radiusX
+            // radiusY = y - basePoint[1]
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x + (radiusX - this.radiusX)
+            centerY = this.y + (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 3) {
+            radiusX = basePoint[0] - x
+            radiusY = ratio * radiusX
+            // radiusY = y - basePoint[1]
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x - (radiusX - this.radiusX)
+            centerY = this.y + (radiusY - this.radiusY)
+          }
+          if (radiusX > 0 && radiusY > 0) {
+            this.radiusX = Number(radiusX.toFixed(this.freeDraw.fix))
+            this.radiusY = Number(radiusY.toFixed(this.freeDraw.fix))
+            this.x = centerX
+            this.y = centerY
+          }
+        } else if (this.transformMode === 'free') {
+          if (this.clickedHandlePointIndex === 0) {
+            radiusX = basePoint[0] - x
+            radiusY = basePoint[1] - y
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x - (radiusX - this.radiusX)
+            centerY = this.y - (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 1) {
+            radiusX = x - basePoint[0]
+            radiusY = basePoint[1] - y
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x + (radiusX - this.radiusX)
+            centerY = this.y - (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 2) {
+            radiusX = x - basePoint[0]
+            radiusY = y - basePoint[1]
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x + (radiusX - this.radiusX)
+            centerY = this.y + (radiusY - this.radiusY)
+          }
+          if (this.clickedHandlePointIndex === 3) {
+            radiusX = basePoint[0] - x
+            radiusY = y - basePoint[1]
+            radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+            radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
+            centerX = this.x - (radiusX - this.radiusX)
+            centerY = this.y + (radiusY - this.radiusY)
+          }
+          if (radiusX > 0 && radiusY > 0) {
+            this.radiusX = Number(radiusX.toFixed(this.freeDraw.fix))
+            this.radiusY = Number(radiusY.toFixed(this.freeDraw.fix))
+            this.x = centerX
+            this.y = centerY
+          }
+        }
+      }
+      if (this.freeDraw.eventsReceive.includes('transform')) {
+        this.freeDraw.eventsCallBack(event, this.id, 'transform')
+      }
+    }
+    /* 
+    if (this.clickedHandleLine) {
+      const baseLine = this.handleLines[this.clickedHandleLineIndex].startPoint
+      if ([0, 1, 2, 3].includes(this.clickedHandleLineIndex)) {
+        let radiusX, radiusY, centerX, centerY
         if (this.clickedHandlePointIndex === 0) {
           radiusX = basePoint[0] - x
           radiusY = ratio * radiusX
           // radiusY = basePoint[1] - y
-          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
-          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
           centerX = this.x - (radiusX - this.radiusX)
           centerY = this.y - (radiusY - this.radiusY)
         }
@@ -127,8 +219,8 @@ class Ellipse extends Shape {
           radiusX = x - basePoint[0]
           radiusY = ratio * radiusX
           // radiusY = basePoint[1] - y
-          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
-          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
           centerX = this.x + (radiusX - this.radiusX)
           centerY = this.y - (radiusY - this.radiusY)
         }
@@ -136,8 +228,8 @@ class Ellipse extends Shape {
           radiusX = x - basePoint[0]
           radiusY = ratio * radiusX
           // radiusY = y - basePoint[1]
-          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
-          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
           centerX = this.x + (radiusX - this.radiusX)
           centerY = this.y + (radiusY - this.radiusY)
         }
@@ -145,22 +237,24 @@ class Ellipse extends Shape {
           radiusX = basePoint[0] - x
           radiusY = ratio * radiusX
           // radiusY = y - basePoint[1]
-          radiusX = this.radiusX + parseInt(radiusX / this.freeDraw.zoomLevel)
-          radiusY = this.radiusY + parseInt(radiusY / this.freeDraw.zoomLevel)
+          radiusX = this.radiusX + (radiusX / this.freeDraw.zoomLevel)
+          radiusY = this.radiusY + (radiusY / this.freeDraw.zoomLevel)
           centerX = this.x - (radiusX - this.radiusX)
           centerY = this.y + (radiusY - this.radiusY)
         }
         if (radiusX > 0 && radiusY > 0) {
           this.radiusX = Number(radiusX.toFixed(this.freeDraw.fix))
           this.radiusY = Number(radiusY.toFixed(this.freeDraw.fix))
-          this.x = centerX;
-          this.y = centerY;
+          this.x = centerX
+          this.y = centerY
         }
       }
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
       }
-    } else if (this.clickedShape) {
+    }
+    */
+    else if (this.clickedShape) {
       this.x = Number((this.x + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
       this.y = Number((this.y + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
       this.clickedShapePoint = [Number(x.toFixed(this.freeDraw.fix)), Number(y.toFixed(this.freeDraw.fix))]
