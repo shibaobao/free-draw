@@ -33,6 +33,7 @@ class FreeDraw {
     // events keys map
     this.eventsKeysMap = {}
 
+    // Precision
     this.fix = 2
 
     this._initFreeDraw()
@@ -51,6 +52,7 @@ class FreeDraw {
     this.canvasDOM.addEventListener('mousemove', this._distributeEvents.bind(this))
     this.canvasDOM.addEventListener('mouseup', this._distributeEvents.bind(this))
     window.document.addEventListener('keydown', this._distributeEvents.bind(this))
+    window.document.addEventListener('keyup', this._distributeEvents.bind(this))
   }
 
   /**
@@ -129,6 +131,40 @@ class FreeDraw {
         } else if (type === 'mouseup') {
           this.isClickedShape = false
           this.clickedShapeId = null
+        } else if (type === 'keydown') {
+          let targetShapeKey = null
+          for (let shapeKey in this.shapeInCanvas) {
+            if (this.shapeInCanvas[shapeKey].edit) {
+              targetShapeKey = shapeKey
+            }
+          }
+          switch(event.keyCode) {
+            case 16:
+              this.shapeInCanvas[targetShapeKey].transformMode = 'ratio'
+              break
+            case 13:
+              this.shapeInCanvas[targetShapeKey].finish()
+              break
+            case 8:
+              this.removeShape(targetShapeKey)
+              break
+            default:
+              console.log(event.keyCode)
+          }
+        } else if (type === 'keyup') {
+          let targetShapeKey = null
+          for (let shapeKey in this.shapeInCanvas) {
+            if (this.shapeInCanvas[shapeKey].edit) {
+              targetShapeKey = shapeKey
+            }
+          }
+          switch(event.keyCode) {
+            case 16:
+              this.shapeInCanvas[targetShapeKey].transformMode = 'free'
+              break
+            default:
+              console.log(event.keyCode)
+          }
         }
       }
     }
@@ -180,6 +216,7 @@ class FreeDraw {
   removeAllShape () {
     this.shapeInCanvas = {}
     this._refreshShapesInCanvas()
+    this._updateModel('view')
     return this
   }
 

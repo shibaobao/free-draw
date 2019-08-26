@@ -1,6 +1,7 @@
 import {
   HANDLE_POINT_STYLE,
   EDIT_SHAPE_STYLE,
+  HANDLE_POINT_CIRCLE_STYLE,
   SHAPE_STYLE
 } from './config'
 
@@ -20,6 +21,9 @@ class Shape {
     this.temporaryPoints = []
     this.temporaryPointsWithoutZoomAndOffset = []
 
+    // Rotate Angle
+    this.rotateAngle = options.rotateAngle || 90
+
     // Shape path
     this.path = options.path || ''
 
@@ -28,6 +32,9 @@ class Shape {
     // Shape handle points
     this.handlePoints = []
 
+    // Shape rotation handle point
+    this.rotationHandlePoint = {}
+
     // Record index if handlepoint clicked
     this.clickedHandlePointIndex = null
 
@@ -35,11 +42,16 @@ class Shape {
     this.clickedShapePoint = []
     this.clickedHandlePoint = false
 
+    // Record index if handleLine clicked
+    this.clickedHandleLineIndex = null
+
     // FreeDraw instance reference
     this.freeDraw = options.freeDraw
 
     // Handle points style
     this.handlePointStyle = options.handlePointStyle
+
+    this.rotationHandlePointStyle = options.rotationHandlePointStyle
 
     // Shape style
     this.shapeStyle = options.shapeStyle
@@ -48,6 +60,9 @@ class Shape {
     this.shape = null
 
     this.clickTime = null
+
+    // Transform mode: free / ratio
+    this.transformMode = 'free'
   }
 
   /**
@@ -62,6 +77,9 @@ class Shape {
     }
     if (!this.shapeStyle) {
       this.shapeStyle = EDIT_SHAPE_STYLE
+    }
+    if (!this.rotationHandlePointStyle) {
+      this.rotationHandlePointStyle = HANDLE_POINT_CIRCLE_STYLE
     }
   }
 
@@ -127,6 +145,7 @@ class Shape {
     this.freeDraw._updateCtxStyle(style)
     this.freeDraw.ctx.fill(newPath)
     this.freeDraw.ctx.stroke(newPath)
+    this.freeDraw.ctx.closePath()
     return newPath
   }
 
@@ -153,17 +172,33 @@ class Shape {
     return this._pointInHandlePoints(x, y) || this._pointInShape(x, y)
   }
 
+  _distance (x1, y1, x2, y2) {
+    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+  }
+
+  _toArc (angle) {
+    return (angle / 360) * Math.PI * 2
+  }
+
+  
   _handleMouseDown (event) {
     const { offsetX: x, offsetY: y } = event
     if (this._pointInHandlePoints(x, y)) {
       this.clickedHandlePoint = true
+      this.clickedHandleLine = false
       this.clickedShapePoint = []
       this.clickedShape = false
       if (this.type === 'polygon') {
         this._polygonMouseDown(event)
       }
+    } else if (this.type === 'ellipse' && this._pointInHandleLines(x, y)) {
+      this.clickedHandleLine = true
+      this.clickedHandlePoint = false
+      this.clickedShapePoint = []
+      this.clickedShape = false
     } else if (this._pointInShape(x, y)) {
       this.clickedHandlePoint = false
+      this.clickedHandleLine = false
       this.clickedShapePoint = [x, y]
       this.clickedShape = true
     } else if (this.type === 'polygon') {
@@ -174,6 +209,7 @@ class Shape {
   _handleMouseUp () {
     this.clickedShape = false
     this.clickedHandlePoint = false
+    this.clickedHandleLine = false
     this.clickedShapePoint = []
   }
 
@@ -218,6 +254,31 @@ class Shape {
       this.clickedHandlePointIndex = clickedHandlePointIndex
     }
     return result
+  }
+
+  /**
+   * Point(x, y) is in handleLines
+   *
+   * @param {*} x
+   * @param {*} y
+   * @returns {Boolean}
+   * @memberof Shape
+   */
+  _pointInHandleLines (x, y) {
+    let result = false
+    if (this.edit) {
+      let clickedHandleLineIndex = null
+      for (let i = 0; i < this.handleLines.length; i++) {
+        if (this.freeDraw.ctx.isPointInPath(this.handleLines[i].obj, x, y)) {
+          result = true
+          clickedHandleLineIndex = i
+          break
+        }
+      }
+      this.clickedHandleLineIndex = clickedHandleLineIndex
+    }
+    console.log(result)
+    return result;
   }
 
   /**
