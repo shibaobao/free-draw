@@ -41,24 +41,25 @@ const rect = freeDraw.addShape({ id: 'rect-1', type: 'rect', startPoint: [50, 50
 
 ## Class - FreeDraw(options)
 
-- options {Object}:
+### Options {Object}:
   - canvas: DOM Element `required`
   - eventsCallBack: {Function} Events hook function
-  - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`>
-
-- Returns: FreeDraw {Object}
-
-- Usage:
+  - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`|`doubleclick`>
+  - Returns: FreeDraw {Object}
+### Example:
 ```js
-const freeDraw = new FreeDraw({ canvas: document.getElementById('canvas') })
+const freeDraw = new FreeDraw({
+  canvas: document.getElementById('canvas'),
+  eventsReceive: ['mouseenter', 'mouseleave', 'mousemove', 'keydown', 'drag', 'doubleclick'],
+  eventsCallBack (event, key, eventType) => {
+    console.log(event, key, eventType)
+  }
+})
 ```
 
-## Object - freeDraw
+## Methods:
 
-- Attributes
-  - canvas: DOM Element `required`
-  - eventsCallBack: {Function} Events hook function
-  - eventsReceive: {Array} <`mouseenter`|`mouseleave`|`mousemove`|`keydown`|`drag`>
-  - model: {String} Current model <`view`|`edit`>
-  - editingId: {String} Current editing shape id
-  - shapeInCanvas: {Object} Shapes in cavas
+### addShape(options): Add a shape to canvas
+### Options {Object}:
+  - id: 
+
