@@ -33,6 +33,14 @@ export const SHAPE_STYLE = {
 }
 
 export const HANDLE_LINE_STYLE = {
-  lineWidth: 3,
+  lineWidth,
   strokeStyle: lineColor
 }
+
+export const CURSOR_STYLE_ON_POINTS = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize']
+
+export const CURSOR_STYLE_ON_LINES = ['n-resize', 'e-resize', 's-resize', 'w-resize']
+
+export const CURSOR_STYLE_ON_SHAPE = 'move'
+
+export const CURSOR_STYLE_DEFAULT = 'default'
