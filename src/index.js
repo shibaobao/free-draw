@@ -36,6 +36,9 @@ class FreeDraw {
     // Precision
     this.fix = 2
 
+    // In rotation
+    this.inRotation = false
+
     this._initFreeDraw()
   }
 
@@ -148,6 +151,9 @@ class FreeDraw {
             case 8:
               this.removeShape(targetShapeKey)
               break
+            case 82:
+              this.inRotation = true
+              break
             default:
               console.log(event.keyCode)
           }
@@ -161,6 +167,9 @@ class FreeDraw {
           switch (event.keyCode) {
             case 16:
               this.shapeInCanvas[targetShapeKey].transformMode = 'free'
+              break
+            case 82:
+              this.inRotation = false
               break
             default:
               console.log(event.keyCode)

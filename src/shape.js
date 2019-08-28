@@ -6,8 +6,11 @@ import {
   CURSOR_STYLE_ON_LINES,
   CURSOR_STYLE_ON_POINTS,
   CURSOR_STYLE_ON_SHAPE,
-  CURSOR_STYLE_DEFAULT
+  CURSOR_STYLE_DEFAULT,
+  CURSOR_STYLE_ROTATION
 } from './config'
+
+import utils from './utils'
 
 class Shape {
   constructor(options) {
@@ -178,48 +181,6 @@ class Shape {
     return this._pointInHandlePoints(x, y) || this._pointInShape(x, y)
   }
 
-  _distance(x1, y1, x2, y2) {
-    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-  }
-
-  /**
-   * Calculate the distance between point(x0, y0) and the line formed by (x1, y1) and (x2, y2)
-   * @param {Number} x0
-   * @param {Number} y0
-   * @param {Number} x1
-   * @param {Number} y1
-   * @param {Number} x2
-   * @param {Number} y2
-   * @returns {Number} The distance
-   */
-  _distanceToSegment(x0, y0, x1, y1, x2, y2) {
-    const v1 = [x2 - x1, y2 - y1]
-    const v2 = [x0 - x1, y0 - y1]
-    const v3 = [x0 - x2, y0 - y2]
-
-    const v1DotV2 = v1[0] * v2[0] + v1[1] * v2[1]
-    const v1DotV3 = v1[0] * v3[0] + v1[1] * v3[1]
-
-    if (v1DotV2 < 0 && v1DotV3 < 0) {
-      return this._distance(x0, y0, x1, y1)
-    }
-    if (v1DotV2 > 0 && v1DotV3 > 0) {
-      return this._distance(x0, y0, x2, y2)
-    }
-    const a = y2 - y1
-    const b = x1 - x2
-    const c = x2 * y1 - x1 * y2
-    return Math.abs(a * x0 + b * y0 + c) / Math.sqrt(a * a + b * b)
-  }
-
-  _toArc(angle) {
-    return (angle / 360) * Math.PI * 2
-  }
-
-  _greatestCommonDivisor(a, b) {
-    return b === 0 ? a : this._greatestCommonDivisor(b, a % b)
-  }
-
   _handleMouseDown(event) {
     this.cursorStyleLock = true
     const { offsetX: x, offsetY: y } = event
@@ -323,13 +284,12 @@ class Shape {
    * @memberof Shape
    */
   _pointInHandleLines(x, y) {
-    // TODO
     let result = false
     if (this.edit) {
       let clickedHandleLineIndex = null
       for (let i = 0; i < this.handleLines.length; i++) {
         const { startPoint, endPoint } = this.handleLines[i]
-        if (this._distanceToSegment(x, y, ...startPoint, ...endPoint) < 3) {
+        if (utils.distanceToSegment(x, y, ...startPoint, ...endPoint) < 3) {
           result = true
           clickedHandleLineIndex = i
           break
