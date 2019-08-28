@@ -1,7 +1,6 @@
 const lineColor = '#0E71EB'
 const shapeFillColor = 'rgba(14, 113, 235, 0.25)'
 const handlePointFillColor = '#FFFFFF'
-const handleCircleFillColor = '#2ECC71'
 const lineWidth = 1
 const handlePointWidth = 8
 const handlePointRadio = 4
@@ -33,6 +32,16 @@ export const SHAPE_STYLE = {
 }
 
 export const HANDLE_LINE_STYLE = {
-  lineWidth: 3,
+  lineWidth,
   strokeStyle: lineColor
 }
+
+export const CURSOR_STYLE_ON_POINTS = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize']
+
+export const CURSOR_STYLE_ON_LINES = ['n-resize', 'e-resize', 's-resize', 'w-resize']
+
+export const CURSOR_STYLE_ON_SHAPE = 'move'
+
+export const CURSOR_STYLE_DEFAULT = 'default'
+
+export const CURSOR_STYLE_ROTATION = 'wait'

@@ -2,11 +2,18 @@ import {
   HANDLE_POINT_STYLE,
   EDIT_SHAPE_STYLE,
   HANDLE_POINT_CIRCLE_STYLE,
-  SHAPE_STYLE
+  SHAPE_STYLE,
+  CURSOR_STYLE_ON_LINES,
+  CURSOR_STYLE_ON_POINTS,
+  CURSOR_STYLE_ON_SHAPE,
+  CURSOR_STYLE_DEFAULT,
+  CURSOR_STYLE_ROTATION
 } from './config'
 
+import utils from './utils'
+
 class Shape {
-  constructor (options) {
+  constructor(options) {
     // Shape id
     this.id = options.id
 
@@ -63,6 +70,8 @@ class Shape {
 
     // Transform mode: free / ratio
     this.transformMode = 'free'
+
+    this.cursorStyleLock = false
   }
 
   /**
@@ -70,7 +79,7 @@ class Shape {
    *
    * @memberof Shape
    */
-  _initShape () {
+  _initShape() {
     // Set default style for shaape
     if (!this.handlePointStyle) {
       this.handlePointStyle = HANDLE_POINT_STYLE
@@ -89,7 +98,7 @@ class Shape {
    * @param {Object} event
    * @memberof Shape
    */
-  _trigger (event) {
+  _trigger(event) {
     const { type } = event
     switch (type) {
       case 'mousedown':
@@ -125,7 +134,7 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  _drawRectPoint (x, y, length, style) {
+  _drawRectPoint(x, y, length, style) {
     const handlePoint = new Path2D()
     handlePoint.rect(x - length / 2, y - length / 2, length, length)
     this.freeDraw._updateCtxStyle(style)
@@ -136,10 +145,10 @@ class Shape {
 
   /**
    * Draw line
-   * @param {*} startPoint 
-   * @param {*} endPoint 
+   * @param {*} startPoint
+   * @param {*} endPoint
    */
-  _drawLine (startPoint, endPoint, style) {
+  _drawLine(startPoint, endPoint, style) {
     const path = `M${startPoint[0]},${startPoint[1]}L${endPoint[0]},${endPoint[1]}`
     const newPath = new Path2D(path)
     this.freeDraw._updateCtxStyle(style)
@@ -159,7 +168,7 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  _drawCirclePoint (x, y, radius, style) {
+  _drawCirclePoint(x, y, radius, style) {
     const handlePoint = new Path2D()
     handlePoint.arc(x, y, radius, 0, 2 * Math.PI, false)
     this.freeDraw._updateCtxStyle(style)
@@ -168,20 +177,12 @@ class Shape {
     return handlePoint
   }
 
-  _includes (x, y) {
+  _includes(x, y) {
     return this._pointInHandlePoints(x, y) || this._pointInShape(x, y)
   }
 
-  _distance (x1, y1, x2, y2) {
-    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-  }
-
-  _toArc (angle) {
-    return (angle / 360) * Math.PI * 2
-  }
-
-  
-  _handleMouseDown (event) {
+  _handleMouseDown(event) {
+    this.cursorStyleLock = true
     const { offsetX: x, offsetY: y } = event
     if (this._pointInHandlePoints(x, y)) {
       this.clickedHandlePoint = true
@@ -206,11 +207,29 @@ class Shape {
     }
   }
 
-  _handleMouseUp () {
+  _changeCursorStyle(event) {
+    if (this.cursorStyleLock) {
+      return
+    } else {
+      const { offsetX: x, offsetY: y } = event
+      if (this._pointInShape(x, y)) {
+        this.freeDraw.canvasDOM.style.cursor = CURSOR_STYLE_ON_SHAPE
+      } else if (this._pointInHandlePoints(x, y)) {
+        this.freeDraw.canvasDOM.style.cursor = CURSOR_STYLE_ON_POINTS[this.clickedHandlePointIndex]
+      } else if (this._pointInHandleLines(x, y)) {
+        this.freeDraw.canvasDOM.style.cursor = CURSOR_STYLE_ON_LINES[this.clickedHandleLineIndex]
+      } else {
+        this.freeDraw.canvasDOM.style.cursor = CURSOR_STYLE_DEFAULT
+      }
+    }
+  }
+
+  _handleMouseUp() {
     this.clickedShape = false
     this.clickedHandlePoint = false
     this.clickedHandleLine = false
     this.clickedShapePoint = []
+    this.cursorStyleLock = false
   }
 
   /**
@@ -220,7 +239,7 @@ class Shape {
    * @returns {Boolean}
    * @memberof Shape
    */
-  _pointInShape (x, y) {
+  _pointInShape(x, y) {
     if (!this.shape) {
       return false
     }
@@ -240,7 +259,7 @@ class Shape {
    * @returns {Boolean}
    * @memberof Shape
    */
-  _pointInHandlePoints (x, y) {
+  _pointInHandlePoints(x, y) {
     let result = false
     if (this.edit) {
       let clickedHandlePointIndex = null
@@ -264,12 +283,13 @@ class Shape {
    * @returns {Boolean}
    * @memberof Shape
    */
-  _pointInHandleLines (x, y) {
+  _pointInHandleLines(x, y) {
     let result = false
     if (this.edit) {
       let clickedHandleLineIndex = null
       for (let i = 0; i < this.handleLines.length; i++) {
-        if (this.freeDraw.ctx.isPointInPath(this.handleLines[i].obj, x, y)) {
+        const { startPoint, endPoint } = this.handleLines[i]
+        if (utils.distanceToSegment(x, y, ...startPoint, ...endPoint) < 3) {
           result = true
           clickedHandleLineIndex = i
           break
@@ -277,8 +297,7 @@ class Shape {
       }
       this.clickedHandleLineIndex = clickedHandleLineIndex
     }
-    console.log(result)
-    return result;
+    return result
   }
 
   /**
@@ -287,7 +306,7 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  editShape () {
+  editShape() {
     this.shapeStyle = EDIT_SHAPE_STYLE
     this.edit = true
     this.freeDraw._updateModel('edit', this.id)
@@ -302,7 +321,7 @@ class Shape {
    * @returns
    * @memberof Shape
    */
-  finish () {
+  finish() {
     this.edit = false
     this.isCreate = false
     this.freeDraw._updateModel('view')
@@ -320,7 +339,7 @@ class Shape {
   /**
    * Cancel Shape editing
    */
-  cancelEdit () {
+  cancelEdit() {
     this.shapeStyle = SHAPE_STYLE
     this.edit = false
     this.freeDraw._updateModel('view')

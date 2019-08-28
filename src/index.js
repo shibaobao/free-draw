@@ -3,7 +3,7 @@ import Ellipse from './ellipse'
 import Polygon from './polygon'
 
 class FreeDraw {
-  constructor (options) {
+  constructor(options) {
     this.ctx = null
     this.canvasDOM = options.canvas
 
@@ -36,6 +36,9 @@ class FreeDraw {
     // Precision
     this.fix = 2
 
+    // In rotation
+    this.inRotation = false
+
     this._initFreeDraw()
   }
 
@@ -44,7 +47,7 @@ class FreeDraw {
    *
    * @memberof FreeDraw
    */
-  _initFreeDraw () {
+  _initFreeDraw() {
     this.ctx = this.canvasDOM.getContext('2d')
 
     // Handle canvas events
@@ -61,7 +64,7 @@ class FreeDraw {
    * @param {*} event
    * @memberof FreeDraw
    */
-  _distributeEvents (event) {
+  _distributeEvents(event) {
     const { type, offsetX: x, offsetY: y } = event
     if (this.model === 'view') {
       // ignore keydown event when in view model
@@ -138,7 +141,7 @@ class FreeDraw {
               targetShapeKey = shapeKey
             }
           }
-          switch(event.keyCode) {
+          switch (event.keyCode) {
             case 16:
               this.shapeInCanvas[targetShapeKey].transformMode = 'ratio'
               break
@@ -147,6 +150,9 @@ class FreeDraw {
               break
             case 8:
               this.removeShape(targetShapeKey)
+              break
+            case 82:
+              this.inRotation = true
               break
             default:
               console.log(event.keyCode)
@@ -158,9 +164,12 @@ class FreeDraw {
               targetShapeKey = shapeKey
             }
           }
-          switch(event.keyCode) {
+          switch (event.keyCode) {
             case 16:
               this.shapeInCanvas[targetShapeKey].transformMode = 'free'
+              break
+            case 82:
+              this.inRotation = false
               break
             default:
               console.log(event.keyCode)
@@ -176,7 +185,7 @@ class FreeDraw {
    * @param {Object} style
    * @memberof FreeDraw
    */
-  _updateCtxStyle (style) {
+  _updateCtxStyle(style) {
     if (style.lineWidth) {
       this.ctx.lineWidth = style.lineWidth
     }
@@ -195,7 +204,7 @@ class FreeDraw {
    * @returns {FreeDraw}
    * @memberof FreeDraw
    */
-  removeShape (shapeId) {
+  removeShape(shapeId) {
     if (this.shapeInCanvas[shapeId]) {
       delete this.shapeInCanvas[shapeId]
     }
@@ -213,7 +222,7 @@ class FreeDraw {
    * @returns
    * @memberof FreeDraw
    */
-  removeAllShape () {
+  removeAllShape() {
     this.shapeInCanvas = {}
     this._refreshShapesInCanvas()
     this._updateModel('view')
@@ -225,7 +234,7 @@ class FreeDraw {
    * @param {Sting} model
    * @param {Sting} editingId
    */
-  _updateModel (model, editingId) {
+  _updateModel(model, editingId) {
     this.model = model || 'view'
     this.editingId = editingId || null
   }
@@ -233,7 +242,7 @@ class FreeDraw {
   /**
    * Remove all shapes in canvas
    */
-  _clearCanvas () {
+  _clearCanvas() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
     return this
   }
@@ -241,14 +250,14 @@ class FreeDraw {
   /**
    * Refresh canvas shape by { shapeInCanvas } Object
    */
-  _refreshShapesInCanvas () {
+  _refreshShapesInCanvas() {
     this._clearCanvas()
     for (let key in this.shapeInCanvas) {
       this.shapeInCanvas[key]._draw()
     }
   }
 
-  zoomAndOffset (zoomLevel, transformCenter, offsetLeft, offsetTop) {
+  zoomAndOffset(zoomLevel, transformCenter, offsetLeft, offsetTop) {
     if (zoomLevel) {
       this.zoomLevel = zoomLevel
     }
@@ -264,7 +273,7 @@ class FreeDraw {
     this._refreshShapesInCanvas()
   }
 
-  addShape (options) {
+  addShape(options) {
     if (this.model === 'edit') {
       throw new Error(`Can not add another shape in edit model`)
     }
@@ -290,7 +299,7 @@ class FreeDraw {
     }
   }
 
-  _addRect (options) {
+  _addRect(options) {
     let { id, type, shapeStyle, handlePointStyle, startPoint, width, height, transform } = options
     if (transform) {
       const result = this.removeZoomAndMoveRect(width, height, startPoint)
@@ -298,7 +307,7 @@ class FreeDraw {
       height = result.height
       startPoint = result.startPoint
     }
-    
+
     return new Rect({
       id,
       type,
@@ -311,7 +320,7 @@ class FreeDraw {
     })
   }
 
-  _addEllipse (options) {
+  _addEllipse(options) {
     let { id, type, shapeStyle, handlePointStyle, x, y, radiusX, radiusY, transform } = options
     if (transform) {
       const result = this.removeZoomAndMoveEllipse(x, y, radiusX, radiusY)
@@ -333,7 +342,7 @@ class FreeDraw {
     })
   }
 
-  removeZoomAndMoveRect (width, height, startPoint) {
+  removeZoomAndMoveRect(width, height, startPoint) {
     width = width / this.zoomLevel
     height = height / this.zoomLevel
     let x = startPoint[0]
@@ -344,8 +353,8 @@ class FreeDraw {
     if (this.offsetTop !== 0) {
       y -= this.offsetTop
     }
-    x = ((x - this.transformCenter[0]) / this.zoomLevel) + this.transformCenter[0]
-    y = ((y - this.transformCenter[1]) / this.zoomLevel) + this.transformCenter[1]
+    x = (x - this.transformCenter[0]) / this.zoomLevel + this.transformCenter[0]
+    y = (y - this.transformCenter[1]) / this.zoomLevel + this.transformCenter[1]
     return {
       width,
       height,
@@ -353,7 +362,7 @@ class FreeDraw {
     }
   }
 
-  removeZoomAndMoveEllipse (x, y, radiusX, radiusY) {
+  removeZoomAndMoveEllipse(x, y, radiusX, radiusY) {
     radiusX = radiusX / this.zoomLevel
     radiusY = radiusY / this.zoomLevel
     if (this.offsetLeft !== 0) {
@@ -362,8 +371,8 @@ class FreeDraw {
     if (this.offsetTop !== 0) {
       y -= this.offsetTop
     }
-    x = ((x - this.transformCenter[0]) / this.zoomLevel) + this.transformCenter[0]
-    y = ((y - this.transformCenter[1]) / this.zoomLevel) + this.transformCenter[1]
+    x = (x - this.transformCenter[0]) / this.zoomLevel + this.transformCenter[0]
+    y = (y - this.transformCenter[1]) / this.zoomLevel + this.transformCenter[1]
     return {
       x,
       y,

@@ -1,10 +1,13 @@
 import Shape from './shape'
 
 class Rect extends Shape {
-  constructor (options) {
+  constructor(options) {
     super(options)
 
-    this.startPoint = [Number(options.startPoint[0].toFixed(this.freeDraw.fix)), Number(options.startPoint[1].toFixed(this.freeDraw.fix))]
+    this.startPoint = [
+      Number(options.startPoint[0].toFixed(this.freeDraw.fix)),
+      Number(options.startPoint[1].toFixed(this.freeDraw.fix))
+    ]
     this.width = Number(options.width.toFixed(this.freeDraw.fix))
     this.height = Number(options.height.toFixed(this.freeDraw.fix))
 
@@ -17,7 +20,7 @@ class Rect extends Shape {
     this._initRect()
   }
 
-  _initRect () {
+  _initRect() {
     this._initShape()
     if (this.startPoint.length > 0 && this.width && this.height) {
       this._draw()
@@ -25,7 +28,7 @@ class Rect extends Shape {
     }
   }
 
-  _draw () {
+  _draw() {
     this._generateHandlePointsByPoints()
     this.shape = this._drawRect()
     if (this.edit) {
@@ -38,7 +41,7 @@ class Rect extends Shape {
    *
    * @memberof Rect
    */
-  _generateHandlePointsByPoints () {
+  _generateHandlePointsByPoints() {
     const { startPoint, width, height } = this.getZoomAndMove()
     this.handlePoints[0] = { obj: null, point: startPoint }
     this.handlePoints[1] = { obj: null, point: [startPoint[0] + width, startPoint[1]] }
@@ -46,7 +49,7 @@ class Rect extends Shape {
     this.handlePoints[3] = { obj: null, point: [startPoint[0], startPoint[1] + height] }
   }
 
-  _drawRectHandlePoints () {
+  _drawRectHandlePoints() {
     for (let i = 0; i < this.handlePoints.length; i++) {
       this.handlePoints[i].obj = this._drawRectPoint(
         this.handlePoints[i].point[0],
@@ -61,7 +64,7 @@ class Rect extends Shape {
     }
   }
 
-  _drawRect () {
+  _drawRect() {
     const { startPoint, width, height } = this.getZoomAndMove()
     const newRect = new Path2D()
     newRect.rect(startPoint[0], startPoint[1], width, height)
@@ -71,28 +74,60 @@ class Rect extends Shape {
     return newRect
   }
 
-  _handleMouseMove (event) {
+  _handleMouseMove(event) {
     const { offsetX: x, offsetY: y } = event
     if (this.clickedHandlePoint) {
       const basePoint = this.handlePoints[this.clickedHandlePointIndex].point
       if (this.clickedHandlePointIndex === 0) {
-        this.width = Number((this.width + (basePoint[0] - x) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.height = Number((this.height + (basePoint[1] - y) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+        this.width = Number(
+          (this.width + (basePoint[0] - x) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.height = Number(
+          (this.height + (basePoint[1] - y) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
         this.startPoint = [
-          Number((this.startPoint[0] + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)),
-          Number((this.startPoint[1] + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+          Number(
+            (this.startPoint[0] + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(
+              this.freeDraw.fix
+            )
+          ),
+          Number(
+            (this.startPoint[1] + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(
+              this.freeDraw.fix
+            )
+          )
         ]
       } else if (this.clickedHandlePointIndex === 1) {
-        this.width = Number((this.width + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.height = Number((this.height + (basePoint[1] - y) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.startPoint[1] = Number((this.startPoint[1] + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+        this.width = Number(
+          (this.width + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.height = Number(
+          (this.height + (basePoint[1] - y) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.startPoint[1] = Number(
+          (this.startPoint[1] + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(
+            this.freeDraw.fix
+          )
+        )
       } else if (this.clickedHandlePointIndex === 2) {
-        this.width = Number((this.width + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.height = Number((this.height + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+        this.width = Number(
+          (this.width + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.height = Number(
+          (this.height + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
       } else if (this.clickedHandlePointIndex === 3) {
-        this.width = Number((this.width + (basePoint[0] - x) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.height = Number((this.height + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
-        this.startPoint[0] = Number((this.startPoint[0] + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+        this.width = Number(
+          (this.width + (basePoint[0] - x) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.height = Number(
+          (this.height + (y - basePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)
+        )
+        this.startPoint[0] = Number(
+          (this.startPoint[0] + (x - basePoint[0]) / this.freeDraw.zoomLevel).toFixed(
+            this.freeDraw.fix
+          )
+        )
       }
       if (this.freeDraw.eventsReceive.includes('transform')) {
         this.freeDraw.eventsCallBack(event, this.id, 'transform')
@@ -100,8 +135,16 @@ class Rect extends Shape {
       this.freeDraw._refreshShapesInCanvas()
     } else if (this.clickedShape) {
       this.startPoint = [
-        Number((this.startPoint[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix)),
-        Number((this.startPoint[1] + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel).toFixed(this.freeDraw.fix))
+        Number(
+          (this.startPoint[0] + (x - this.clickedShapePoint[0]) / this.freeDraw.zoomLevel).toFixed(
+            this.freeDraw.fix
+          )
+        ),
+        Number(
+          (this.startPoint[1] + (y - this.clickedShapePoint[1]) / this.freeDraw.zoomLevel).toFixed(
+            this.freeDraw.fix
+          )
+        )
       ]
       this.clickedShapePoint = [x, y]
       if (this.freeDraw.eventsReceive.includes('drag')) {
@@ -111,13 +154,23 @@ class Rect extends Shape {
     }
   }
 
-  getZoomAndMove () {
+  getZoomAndMove() {
     let width = this.width
     let height = this.height
     width = this.width * this.freeDraw.zoomLevel
     height = this.height * this.freeDraw.zoomLevel
-    let x = Number(((this.startPoint[0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[0]).toFixed(this.freeDraw.fix))
-    let y = Number(((this.startPoint[1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel + this.freeDraw.transformCenter[1]).toFixed(this.freeDraw.fix))
+    let x = Number(
+      (
+        (this.startPoint[0] - this.freeDraw.transformCenter[0]) * this.freeDraw.zoomLevel +
+        this.freeDraw.transformCenter[0]
+      ).toFixed(this.freeDraw.fix)
+    )
+    let y = Number(
+      (
+        (this.startPoint[1] - this.freeDraw.transformCenter[1]) * this.freeDraw.zoomLevel +
+        this.freeDraw.transformCenter[1]
+      ).toFixed(this.freeDraw.fix)
+    )
     if (this.freeDraw.offsetLeft !== 0) {
       x = Number((x + this.freeDraw.offsetLeft).toFixed(this.freeDraw.fix))
     }
@@ -130,32 +183,46 @@ class Rect extends Shape {
       startPoint: [x, y]
     }
   }
-  
-  _toSVGPath () {
+
+  _toSVGPath() {
     const fix = this.freeDraw.fix
-    this.points[0] = [Number(this.startPoint[0].toFixed(fix)), Number(this.startPoint[1].toFixed(fix))]
-    this.points[1] = [Number((this.startPoint[0] + this.width).toFixed(fix)), Number(this.startPoint[1].toFixed(fix))]
-    this.points[2] = [Number((this.startPoint[0] + this.width).toFixed(fix)), Number((this.startPoint[1] + this.height).toFixed(fix))]
-    this.points[3] = [Number((this.startPoint[0]).toFixed(fix)), Number((this.startPoint[1] + this.height).toFixed(fix))]
-    this.path = `M${this.points[0].join(',')}L${this.points[1].join(',')}L${this.points[2].join(',')}L${this.points[3].join(',')}Z`
+    this.points[0] = [
+      Number(this.startPoint[0].toFixed(fix)),
+      Number(this.startPoint[1].toFixed(fix))
+    ]
+    this.points[1] = [
+      Number((this.startPoint[0] + this.width).toFixed(fix)),
+      Number(this.startPoint[1].toFixed(fix))
+    ]
+    this.points[2] = [
+      Number((this.startPoint[0] + this.width).toFixed(fix)),
+      Number((this.startPoint[1] + this.height).toFixed(fix))
+    ]
+    this.points[3] = [
+      Number(this.startPoint[0].toFixed(fix)),
+      Number((this.startPoint[1] + this.height).toFixed(fix))
+    ]
+    this.path = `M${this.points[0].join(',')}L${this.points[1].join(',')}L${this.points[2].join(
+      ','
+    )}L${this.points[3].join(',')}Z`
     this.SVGPath = `<path d="${this.path}" />`
   }
 
-  _backupData () {
+  _backupData() {
     this.startPointBackup = JSON.parse(JSON.stringify(this.startPoint))
     this.widthBackup = this.width
     this.heightBackup = this.height
     this.pointsBackup = JSON.parse(JSON.stringify(this.points))
   }
 
-  _rollbackData () {
+  _rollbackData() {
     this.startPoint = JSON.parse(JSON.stringify(this.startPointBackup))
     this.width = this.widthBackup
     this.height = this.heightBackup
     this.points = JSON.parse(JSON.stringify(this.pointsBackup))
   }
 
-  getHandlePointCoordinate (handlePointIndex) {
+  getHandlePointCoordinate(handlePointIndex) {
     if (this.handlePoints[handlePointIndex]) {
       return this.handlePoints[handlePointIndex].point
     }

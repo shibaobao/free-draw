@@ -21,7 +21,7 @@
       }
       .delete {
         border: 2px solid #c0392b;
-        background-color: #e74c3c;        
+        background-color: #e74c3c;
       }
       .options:hover {
         cursor: pointer;
@@ -40,25 +40,25 @@
     <script>
       const freeDraw = new FreeDraw.default({
         canvas: document.getElementById('canvas')
-      });
-      freeDraw.zoomAndOffset(3.0, [0, 0], 100, 100);
+      })
+      freeDraw.zoomAndOffset(3, [0, 0], 100, 100)
 
-      let options = document.querySelectorAll('.options');
-      options.forEach(option => {
-        option.addEventListener('click', event => {
-          const { name } = event.target.dataset;
+      let options = document.querySelectorAll('.options')
+      options.forEach((option) => {
+        option.addEventListener('click', (event) => {
+          const { name } = event.target.dataset
           try {
             switch (name) {
               case 'ellipse':
                 freeDraw.addShape({
                   id: `${name}-${Math.random()}`,
                   type: `${name}`,
-                  x: 20,
-                  y: 20,
+                  x: 0,
+                  y: 0,
                   radiusX: 20,
                   radiusY: 20
-                });
-                break;
+                })
+                break
               case 'rect':
                 freeDraw.addShape({
                   id: `${name}-${Math.random()}`,
@@ -66,25 +66,25 @@
                   width: 200,
                   height: 100,
                   startPoint: [100, 100]
-                });
-                break;
+                })
+                break
               case 'polygon':
                 freeDraw.addShape({
                   id: 'polygon-1',
-                  type: 'polygon',
-                });
-                break;
+                  type: 'polygon'
+                })
+                break
               case 'delete':
-                freeDraw.removeAllShape();
-                break;
+                freeDraw.removeAllShape()
+                break
               default:
             }
           } catch (error) {
-            console.log(error);
-            alert(error.message);
+            console.log(error)
+            alert(error.message)
           }
-        });
-      });
+        })
+      })
     </script>
   </body>
 </html>
